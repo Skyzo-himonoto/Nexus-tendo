@@ -31,6 +31,12 @@ const { broadcastCommand } = require('../commands/broadcast');
 const { settingCommand } = require('../commands/settings');
 const { execCommand } = require('../commands/exec');
 const { getCommand } = require('../commands/get');
+const { randomCommand } = require('../commands/random');
+const { islamCommand } = require('../commands/islam');
+const { makerCommand } = require('../commands/maker');
+const { searchCommand } = require('../commands/search');
+const { playCommand } = require('../commands/play');
+const { answerHandler } = require('../commands/game');
 
 
 function getPrefixAndCommand(text) {
