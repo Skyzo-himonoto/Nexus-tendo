@@ -42,7 +42,7 @@ module.exports = {
     geminiApiKey: process.env.GEMINI_API_KEY || "AIzaSyCjSqFzrHJ1O8Lauz78lLiaMCHSXYh1vvo",
     
     /** API Key untuk OpenWeatherMap (dapatkan di https://openweathermap.org/api) */
-    weatherApiKey: process.env.WEATHER_API_KEY || "",
+    weatherApiKey: process.env.WEATHER_API_KEY || "313dec6e4e61e0e2437d2bcb0b99c871",
     
     /** Aktifkan fitur game */
     enableGame: true,
