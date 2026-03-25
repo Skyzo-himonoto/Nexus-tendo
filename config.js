@@ -1,6 +1,6 @@
 /**
  * ==============================================
- * NEXUS TENDO MD - CONFIGURATION FILE
+ * NEXUS TENDO MD 
  * ==============================================
  * Script ini dikembangkan oleh Nexus 
  * credit by Nexus omni - tendo
@@ -16,44 +16,34 @@
 require('dotenv').config();
 
 module.exports = {
-    // ==================== OWNER CONFIGURATION ====================
     /** 
      * Nomor owner bot (bisa lebih dari 1)
      * Format: 628xxxxxxxxx (tanpa tanda + atau 0)
-     * Contoh: owner: "6281234567890" atau "6281234567890,6289876543210"
+     * Contoh: owner: "62xxx" atau "62xxx,62xxx"
      */
-    owner: "6281234567890",  // GANTI DENGAN NOMOR WHATSAPP LU
+    owner: "6288225879928",  // GANTI DENGAN NOMOR WHATSAPP LU
     
-    /** Nama owner yang akan ditampilkan di menu */
     ownerName: "Nexus",  // GANTI DENGAN NAMA LU
     
-    // ==================== BOT CONFIGURATION ====================
-    /** Nama bot yang akan ditampilkan */
     botName: "Nexus Tendo",  // GANTI DENGAN NAMA BOT LU
     
     /** Versi bot */
     version: "3.0.0",
     
-    /** Prefix default untuk command */
     prefix: ".",  // GANTI PREFIX SESUAIKAN 
     
-    /** Multi prefix - semua prefix ini akan dikenali */
     prefixes: [".", "/", "!", "#", "?", "$", ">", "<"],
     
-    /** Timezone untuk waktu lokal */
     timezone: "Asia/Jakarta",
     
-    /** Nama folder session */
     sessionName: "nexus_session",
     
-    // ==================== API KEYS ====================
     /** API Key untuk Google Gemini (dapatkan di https://makersuite.google.com/app/apikey) */
     geminiApiKey: process.env.GEMINI_API_KEY || "",
     
     /** API Key untuk OpenWeatherMap (dapatkan di https://openweathermap.org/api) */
     weatherApiKey: process.env.WEATHER_API_KEY || "",
     
-    // ==================== FEATURE TOGGLES ====================
     /** Aktifkan fitur game */
     enableGame: true,
     
