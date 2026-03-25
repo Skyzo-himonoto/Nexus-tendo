@@ -1,8 +1,8 @@
 /**
  * ==============================================
- * NEXUS TENDO MD - MAIN ENTRY POINT
+ * NEXUS TENDO MD 
  * ==============================================
- * WhatsApp Bot Multi-Device menggunakan Baileys
+ * WhatsApp Bot Multi-Device
  * 
  * Fitur:
  * - Auto reconnect
@@ -20,46 +20,29 @@ const fs = require('fs-extra');
 const config = require('../config');
 const { handleMessage } = require('./handlers/message');
 
-// Buat folder sessions jika belum ada
 if (!fs.existsSync('./sessions')) {
     fs.mkdirSync('./sessions');
 }
-
-// In-memory store untuk caching data
 const store = makeInMemoryStore({ logger: Pino().child({ level: 'silent' }) });
-
-/**
- * Fungsi utama untuk memulai bot
- * Handle koneksi, autentikasi, dan event
- */
 async function startBot() {
-    // Load atau buat session baru
     const { state, saveCreds } = await useMultiFileAuthState(`./sessions/${config.sessionName}`);
-    
-    // Konfigurasi socket WhatsApp
     const sock = makeWASocket({
         auth: state,
-        logger: Pino({ level: 'silent' }), // Matikan log berlebihan
-        printQRInTerminal: false, // Kita handle QR sendiri
-        browser: [config.botName, 'Chrome', '120.0.0'], // User agent
-        markOnlineOnConnect: true, // Tampilkan online
-        syncFullHistory: false, // Jangan sync full history
-        patchWhatsappMaxMsgs: 100 // Limit pesan
+        logger: Pino({ level: 'silent' }), 
+        printQRInTerminal: false, 
+        browser: [config.botName, 'Chrome', '120.0.0'],
+        markOnlineOnConnect: true, 
+        syncFullHistory: false, 
+        patchWhatsappMaxMsgs: 100 
     });
-    
-    // Bind store ke event
+   
     store.bind(sock.ev);
-    
-    /**
-     * Handle event connection update
-     * Menampilkan QR Code dan status koneksi
-     */
     sock.ev.on('connection.update', (update) => {
         const { connection, lastDisconnect, qr } = update;
         
         if (qr) {
             console.log(chalk.yellow('\n╔══════════════════════════════════════╗'));
-            console.log(chalk.yellow('║     📱 SCAN QR CODE BERIKUT          ║'));
+            console.log(chalk.yellow('║     📱 CARA SCAN QR CODE                     ║'));
             console.log(chalk.yellow('╚══════════════════════════════════════╝\n'));
             qrcode.generate(qr, { small: true });
             console.log(chalk.cyan('\n📱 Atau scan melalui WhatsApp:\n'));
@@ -120,9 +103,8 @@ async function startBot() {
     });
 }
 
-// Jalankan bot
 startBot().catch(err => {
     console.error(chalk.red('\n❌ Fatal Error:', err.message));
-    console.log(chalk.yellow('📌 Restarting bot in 10 seconds...\n'));
+    console.log(chalk.yellow('📌 RESTART BOT MULAI 10 DETIK...\n'));
     setTimeout(() => startBot(), 10000);
 });
