@@ -28,7 +28,7 @@ const { groupCommand } = require('../commands/group');
 const { gameCommand } = require('../commands/game');
 const { animeCommand } = require('../commands/anime');
 const { broadcastCommand } = require('../commands/broadcast');
-const { settingCommand } = require('../commands/setting');
+const { settingCommand } = require('../commands/settings');
 const { execCommand } = require('../commands/exec');
 const { getCommand } = require('../commands/get');
 
