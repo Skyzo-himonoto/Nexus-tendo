@@ -1,4 +1,3 @@
-const sharp = require('sharp');
 const fs = require('fs-extra');
 const path = require('path');
 const { exec } = require('child_process');
@@ -35,13 +34,12 @@ async function converterCommand(sock, msg, command) {
     
     if (!mediaMsg) {
         await sock.sendMessage(sender, { 
-            text: `❌ *Cara pakai:*\n.${command} (balas media yang ingin dikonversi)\n\nContoh:\n.toaudio (balas video)\n.toimg (balas stiker)` 
+            text: `❌ *Cara pakai:*\n.${command} (balas media)\n\nContoh:\n.toaudio (balas video)\n.toimg (balas stiker)` 
         });
         return;
     }
     
-    const processingMsg = config.converterMsg.processing.replace(/{type}/g, command);
-    await sock.sendMessage(sender, { text: processingMsg });
+    await sock.sendMessage(sender, { text: `🔄 Mengkonversi ${command}...` });
     
     try {
         const mediaBuffer = await sock.downloadMediaMessage({
@@ -54,9 +52,10 @@ async function converterCommand(sock, msg, command) {
         
         const tempPath = path.join(__dirname, '../../temp');
         if (!fs.existsSync(tempPath)) fs.mkdirSync(tempPath);
+        
         if (command === 'toaudio' || command === 'tomp3') {
             if (mediaType !== 'video') {
-                await sock.sendMessage(sender, { text: '❌ Balas video untuk konversi ke audio!' });
+                await sock.sendMessage(sender, { text: '❌ Balas video' });
                 return;
             }
             
@@ -85,23 +84,19 @@ async function converterCommand(sock, msg, command) {
         
         else if (command === 'toimg' || command === 'toimage') {
             if (mediaType !== 'sticker') {
-                await sock.sendMessage(sender, { text: '❌ Balas stiker untuk konversi ke gambar!' });
+                await sock.sendMessage(sender, { text: '❌ Balas stiker' });
                 return;
             }
             
-            const imageBuffer = await sharp(mediaBuffer)
-                .png()
-                .toBuffer();
-            
             await sock.sendMessage(sender, {
-                image: imageBuffer,
-                caption: '✅ *Konversi stiker ke gambar berhasil*'
+                image: mediaBuffer,
+                caption: '✅ *Konversi berhasil*'
             });
         }
         
         else if (command === 'togif') {
             if (mediaType !== 'video') {
-                await sock.sendMessage(sender, { text: '❌ Balas video untuk konversi ke GIF' });
+                await sock.sendMessage(sender, { text: '❌ Balas video!' });
                 return;
             }
             
@@ -121,56 +116,22 @@ async function converterCommand(sock, msg, command) {
             await sock.sendMessage(sender, {
                 video: gifBuffer,
                 gifPlayback: true,
-                caption: '✅ *GIF berhasil dibuat*'
+                caption: '✅ *GIF berhasi*'
             });
             
             fs.unlinkSync(inputPath);
             fs.unlinkSync(outputPath);
         }
         
-        else if (command === 'compress') {
-            if (mediaType === 'image') {
-                const compressed = await sharp(mediaBuffer)
-                    .resize(800, 800, { fit: 'inside' })
-                    .jpeg({ quality: 70 })
-                    .toBuffer();
-                
-                await sock.sendMessage(sender, {
-                    image: compressed,
-                    caption: '✅ *Gambar berhasil dikompres*'
-                });
-            } else if (mediaType === 'video') {
-                const inputPath = path.join(tempPath, `input_${Date.now()}.mp4`);
-                const outputPath = path.join(tempPath, `output_${Date.now()}_compressed.mp4`);
-                
-                fs.writeFileSync(inputPath, mediaBuffer);
-                
-                await new Promise((resolve, reject) => {
-                    exec(`ffmpeg -i ${inputPath} -vf "scale=640:-2" -c:v libx264 -crf 28 -preset fast ${outputPath}`, (err) => {
-                        if (err) reject(err);
-                        else resolve();
-                    });
-                });
-                
-                const compressedBuffer = fs.readFileSync(outputPath);
-                await sock.sendMessage(sender, {
-                    video: compressedBuffer,
-                    caption: '✅ *Video berhasil dikompres!*'
-                });
-                
-                fs.unlinkSync(inputPath);
-                fs.unlinkSync(outputPath);
-            } else {
-                await sock.sendMessage(sender, { text: '❌ Balas gambar atau video untuk kompres!' });
-                return;
-            }
+        else {
+            await sock.sendMessage(sender, { text: `⚠️ Fitur ${command} dalam pengembangan` });
         }
         
-        await sock.sendMessage(sender, { text: config.converterMsg.success });
+        await sock.sendMessage(sender, { text: '✅ Selesai' });
         
     } catch (error) {
         console.error('Converter error:', error);
-        await sock.sendMessage(sender, { text: config.converterMsg.failed });
+        await sock.sendMessage(sender, { text: '❌ Gagal konversi' });
     }
 }
 
