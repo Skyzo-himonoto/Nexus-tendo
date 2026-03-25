@@ -17,8 +17,9 @@ async function aiCommand(sock, sender, prompt) {
     try {
         const response = await axios.post(
             `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${config.geminiApiKey}`,
-            { contents: [{ parts: [{ text: prompt }] }] }
-        );
+             { contents: [{ parts: [{ text: prompt }] }] },
+             { timeout: 30000 } 
+         );
         
         let reply = response.data.candidates[0].content.parts[0].text;
         if (reply.length > 4000) reply = reply.substring(0, 4000) + '\n\n... (dipotong)';
