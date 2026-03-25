@@ -40,7 +40,7 @@ async function startBot() {
     // Atau lo bisa tulis manual: const myNumber = "628xxxxxxxxx";
     
     console.log(chalk.yellow('\n╔══════════════════════════════════════╗'));
-    console.log(chalk.yellow('║     🔑 PAIRING CODE                          ║'));
+    console.log(chalk.yellow('║     🔑 PAIRING CODE                       ║'));
     console.log(chalk.yellow('╚══════════════════════════════════════╝\n'));
     console.log(chalk.cyan('📱 Menghubungkan ke nomor:'), chalk.white(ownerNumber));
     console.log(chalk.cyan('⏳ Mohon tunggu sebentar...\n'));
