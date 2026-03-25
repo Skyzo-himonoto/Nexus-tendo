@@ -2,7 +2,7 @@
  * ==============================================
  * NEXUS TENDO MD 
  * ==============================================
- * cuman owner yang bisa 
+ * hanya digunakan untuk owner
  * 
  * Cara pakai:
  * .setprefix [prefix] - Mengubah prefix
