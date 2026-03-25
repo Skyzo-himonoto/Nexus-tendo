@@ -12,6 +12,7 @@
  * ==============================================
  */
 
+const { default: makeWASocket, useMultiFileAuthState, DisconnectReason } = require('@whiskeysockets/baileys');
 const Pino = require('pino');
 const chalk = require('chalk');
 const fs = require('fs-extra');
