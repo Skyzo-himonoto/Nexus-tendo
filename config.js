@@ -39,10 +39,10 @@ module.exports = {
     sessionName: "nexus_session",
     
     /** API Key untuk Google Gemini (dapatkan di https://makersuite.google.com/app/apikey) */
-    geminiApiKey: process.env.GEMINI_API_KEY || "AIzaSyCjSqFzrHJ1O8Lauz78lLiaMCHSXYh1vvo",
+    geminiApiKey: process.env.GEMINI_API_KEY || "",,
     
     /** API Key untuk OpenWeatherMap (dapatkan di https://openweathermap.org/api) */
-    weatherApiKey: process.env.WEATHER_API_KEY || "313dec6e4e61e0e2437d2bcb0b99c871",
+    weatherApiKey: process.env.WEATHER_API_KEY || "",
     
     /** Aktifkan fitur game */
     enableGame: true,
