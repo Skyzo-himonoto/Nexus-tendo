@@ -1,6 +1,6 @@
 /**
  * ==============================================
- * NEXUS TENDO MD - EXEC COMMAND
+ * NEXUS TENDO MD 
  * ==============================================
  * Hanya bisa digunakan oleh owner
  * 
