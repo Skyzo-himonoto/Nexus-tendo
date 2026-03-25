@@ -16,7 +16,9 @@ async function downloadCommand(sock, sender, type, url) {
         if (type === 'ytmp3' || type === 'ytmp4' || type === 'yt') {
             const info = await ytdl.getInfo(url);
             const title = info.videoDetails.title;
-            
+        } catch (error) {
+    await sock.sendMessage(sender, { text: '❌ URL YouTube tidak valid!' });
+    }
             if (type === 'ytmp3' || type === 'yt') {
                 const stream = ytdl(url, { quality: 'highestaudio' });
                 await sock.sendMessage(sender, {
