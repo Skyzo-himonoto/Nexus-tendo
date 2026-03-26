@@ -1,7 +1,7 @@
 {
-  "name": "Nexus-md",
+  "name": "nexus-md",
   "version": "5.0.0",
-  "description": "Nexus tendo - WhatsApp Bot",
+  "description": "Quantum tendo - WhatsApp Bot multi device ",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
@@ -19,8 +19,7 @@
     "pino": "^8.17.0",
     "ytdl-core": "^4.11.5",
     "yt-search": "^2.10.3",
-    "lowdb": "^7.0.1",
-    "node-cron": "^3.0.3"
+    "lowdb": "^7.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
