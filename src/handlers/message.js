@@ -178,7 +178,7 @@ async function handleMessage(sock, msg) {
                 if (isOwner) {
                     await broadcastCommand(sock, args.join(' '));
                 } else {
-                    await sock.sendMessage(sender, { text: `❌ *Akses ditolak!*\nCommand ini hanya untuk owner bot.\n\nHubungi: wa.me/${config.getOwnerNumber()}` });
+                    await sock.sendMessage(sender, { text: `❌ *Akses ditolak*\nCommand ini hanya untuk owner bot.\n\nHubungi: wa.me/${config.getOwnerNumber()}` });
                 }
                 break;
                 
@@ -187,7 +187,7 @@ async function handleMessage(sock, msg) {
                 if (isOwner) {
                     await settingCommand(sock, sender, 'prefix', args[0]);
                 } else {
-                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot!' });
+                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot' });
                 }
                 break;
                 
@@ -196,7 +196,7 @@ async function handleMessage(sock, msg) {
                 if (isOwner) {
                     await settingCommand(sock, sender, 'botname', args.join(' '));
                 } else {
-                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot!' });
+                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot' });
                 }
                 break;
                 
@@ -205,7 +205,7 @@ async function handleMessage(sock, msg) {
                 if (isOwner) {
                     await execCommand(sock, sender, args.join(' '));
                 } else {
-                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot!' });
+                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot' });
                 }
                 break;
                 
@@ -214,7 +214,7 @@ async function handleMessage(sock, msg) {
                 if (isOwner) {
                     await getCommand(sock, sender, args[0]);
                 } else {
-                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot!' });
+                    await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk owner bot' });
                 }
                 break;
                 
@@ -230,7 +230,7 @@ async function handleMessage(sock, msg) {
                             await sock.sendMessage(sender, { text: `❌ Gagal join grup: ${e.message}` });
                         }
                     } else {
-                        await sock.sendMessage(sender, { text: '❌ Masukkan link grup!\nContoh: .join https://chat.whatsapp.com/xxx' });
+                        await sock.sendMessage(sender, { text: '❌ Masukkan link grup\nContoh: .join https://chat.whatsapp.com/xxx' });
                     }
                 }
                 break;
@@ -238,7 +238,7 @@ async function handleMessage(sock, msg) {
             case 'leave':
                 if (isOwner && isGroup) {
                     await sock.groupLeave(sender);
-                    await sock.sendMessage(sender, { text: '👋 Bot keluar dari grup!' });
+                    await sock.sendMessage(sender, { text: '👋 izin pamit bang' });
                 }
                 break;
                 
