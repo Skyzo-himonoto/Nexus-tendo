@@ -3,8 +3,8 @@ require('dotenv').config();
 module.exports = {
     owner: "6288225879928",
     ownerName: "Mustofa",
-    botName: "Nexus tendo",
-    version: "4.0.0",
+    botName: "Nexus tendo MD",
+    version: "5.0.0",
     prefix: ".",
     prefixes: [".", "/", "!", "#", "?", "$"],
     timezone: "Asia/Jakarta",
@@ -22,24 +22,24 @@ module.exports = {
     
     stickerMsg: {
         processing: "🔄 *nexus* lagi bikin stiker...",
-        success: "✅ *Stiker jadi*",
-        failed: "❌ *Gagal bikin stiker*",
+        success: "✅ *Stiker jadi!*",
+        failed: "❌ *Gagal bikin stiker!*",
         noMedia: "❌ *Balas gambar/video pake command .stiker*"
     },
     
     aiMsg: {
         processing: "🤖 *nexus AI* mikir dulu...",
         noPrompt: "❌ *Cara:* .ai [pertanyaan]",
-        error: "❌ *AI error* Coba lagi",
-        noApiKey: "❌ *API Key kosong* Isi di .env"
+        error: "❌ *AI error!* Coba lagi",
+        noApiKey: "❌ *API Key kosong!* Isi di .env"
     },
     
     downloadMsg: {
         processing: "🔄 *Mendownload* {type}...",
-        success: "✅ *Download berhasil*\n📌 *{title}*",
+        success: "✅ *Download berhasil!*\n📌 *{title}*",
         failed: "❌ *Gagal mendownload.*",
         noUrl: "❌ *Cara pakai:*\n.{command} [url]",
-        notFound: "❌ *Media tidak ditemukan*"
+        notFound: "❌ *Media tidak ditemukan!*"
     },
     
     groupMsg: {
@@ -47,9 +47,9 @@ module.exports = {
         promoteSuccess: "✅ *Berhasil promote {count} user*",
         demoteSuccess: "✅ *Berhasil demote {count} user*",
         addSuccess: "✅ *Berhasil menambahkan {count} user*",
-        noMention: "❌ *Tag user yang ingin di-{action}*",
-        notOwner: "❌ *Command ini hanya untuk owner bot*",
-        notAdmin: "❌ *Command ini hanya untuk admin grup*"
+        noMention: "❌ *Tag user yang ingin di-{action}!*",
+        notOwner: "❌ *Command ini hanya untuk owner bot!*",
+        notAdmin: "❌ *Command ini hanya untuk admin grup!*"
     },
     
     converterMsg: {
