@@ -138,17 +138,19 @@ npm run pm2
 
 ```env
 # Bot Configuration
-OWNER_NUMBER=628xxxxxxxxxx
-OWNER_NAME=Nexus
+OWNER_NUMBER=628xxxxxxxxxx (nomor lu)
+OWNER_NAME=YourName
 BOT_NAME=NexusMD
 SESSION_NAME=nexus-session
-
-# Default Prefix (bisa diubah via .settings)
 PREFIX=.
 
-# Multi Prefix didukung otomatis: ., !, /, #, ?, $, &, @, +, -, =, ;, :, ~, `, |, ^, %
-# User bisa pake salah satu dari prefix di atas
+# Authentication Mode
+# pilih salah satu:
+# qr      - Scan QR code (default)
+# pairing - Pakai pairing code 8 digit
+AUTH_MODE=qr
 
+# Auto features
 AUTO_READ=false
 AUTO_TYPING=false
 AUTO_RECORDING=false
@@ -159,6 +161,7 @@ MAX_PREMIUM=10
 OPENAI_API_KEY=
 GEMINI_API_KEY=
 
+# Timezone
 TIMEZONE=Asia/Jakarta
 ```
 
