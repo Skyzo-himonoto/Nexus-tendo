@@ -228,10 +228,10 @@ MIT License - Bebas digunakan, develop, dan dikembangkan!
 
 ```env
 # Bot Configuration
-OWNER_NUMBER=6281234567890
-OWNER_NAME=YourName
-BOT_NAME=QuantumMD
-SESSION_NAME=quantum-session
+OWNER_NUMBER=085715818953
+OWNER_NAME=Nexus
+BOT_NAME=NexusMD
+SESSION_NAME=nexus-session
 PREFIX=.
 AUTO_READ=false
 AUTO_TYPING=false
@@ -290,7 +290,7 @@ ecosystem.config.js (Update)
 ```javascript
 export default {
   apps: [{
-    name: 'quantum-md',
+    name: 'nexus-md',
     script: 'index.js',
     cwd: './',
     watch: false,
