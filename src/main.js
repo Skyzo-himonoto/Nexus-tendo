@@ -13,6 +13,7 @@ import path from 'path';
 import chalk from 'chalk';
 
 const store = makeInMemoryStore({ logger: pino().child({ level: 'silent' }) });
+
 async function startBot() {
   const { state, saveCreds } = await useMultiFileAuthState(config.sessionsPath);
   
@@ -38,6 +39,17 @@ async function startBot() {
       console.log(chalk.yellow('Scan QR Code dengan WhatsApp mu:'));
     }
     
+    if (connection === 'open') {
+      const authInfo = await state;
+      const botNumber = sock.user.id.split(':')[0];
+      config.setBotNumber(botNumber);
+      
+      console.log(chalk.green(`✅ Bot berhasil terhubung!`));
+      console.log(chalk.cyan(`🤖 Bot Number: ${config.getBotNumber()}`));
+      console.log(chalk.cyan(`👑 Owner Number: ${config.getOwnerNumber()}`));
+      console.log(chalk.gray('────────────────────────────────────────'));
+    }
+    
     if (connection === 'close') {
       const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode;
       const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
@@ -50,8 +62,6 @@ async function startBot() {
       } else {
         console.log(chalk.red('Session expired, hapus folder sessions dan scan ulang!'));
       }
-    } else if (connection === 'open') {
-      console.log(chalk.green('✅ Bot berhasil terhubung!'));
     }
   });
   
@@ -63,7 +73,7 @@ async function startBot() {
       console.error('Error handling message:', err);
     }
   });
-  
+
   sock.ev.on('groups.update', async (updates) => {
     console.log('Group update:', updates);
   });
