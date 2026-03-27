@@ -1,4 +1,5 @@
 import db from '../../lib/database/index.js';
+import config from '../../config.js';
 
 export default async function settings(context) {
   const { sock, sender, isOwner, args, prefix } = context;
@@ -7,23 +8,29 @@ export default async function settings(context) {
   const currentPrefix = await db.getPrefix();
   
   if (args.length === 0) {
-    let text = `╭━━━━━ *BOT SETTINGS* ━━━━━╮
-┃
-┃ 🤖 *Bot Name:* ${currentSettings.botName || 'Quantum-MD'}
-┃ 🔧 *Prefix:* ${currentPrefix}
-┃ 📖 *Auto Read:* ${currentSettings.autoRead ? '✅' : '❌'}
-┃ ⌨️ *Auto Typing:* ${currentSettings.autoTyping ? '✅' : '❌'}
-┃ 🎙️ *Auto Recording:* ${currentSettings.autoRecording ? '✅' : '❌'}
-┃ 👁️ *Auto Status View:* ${currentSettings.autoStatusView ? '✅' : '❌'}
-┃
-┃ 📝 *Commands:*
-┃ ✦ ${prefix}settings prefix <new_prefix>
-┃ ✦ ${prefix}settings autoRead on/off
-┃ ✦ ${prefix}settings autoTyping on/off
-┃ ✦ ${prefix}settings autoRecording on/off
-┃ ✦ ${prefix}settings autoStatusView on/off
-┃
-╰━━━━━━━━━━━━━━━━━━━╯`;
+    let text = `╔══════════════════════════════════════╗
+║            *BOT SETTINGS*               ║
+╠══════════════════════════════════════╣
+║  🤖 *Bot Name:* ${currentSettings.botName || config.botName}
+║  🔧 *Default Prefix:* ${currentPrefix}
+║  📌 *Supported Prefixes:* 
+║     ${config.allowedPrefixes.join(', ')}
+║
+║  📖 *Auto Read:* ${currentSettings.autoRead ? '✅' : '❌'}
+║  ⌨️ *Auto Typing:* ${currentSettings.autoTyping ? '✅' : '❌'}
+║  🎙️ *Auto Recording:* ${currentSettings.autoRecording ? '✅' : '❌'}
+║  👁️ *Auto Status View:* ${currentSettings.autoStatusView ? '✅' : '❌'}
+║
+╠══════════════════════════════════════╣
+║  📝 *Commands:*
+║  ✦ ${prefix}settings prefix <new_prefix>
+║  ✦ ${prefix}settings autoRead on/off
+║  ✦ ${prefix}settings autoTyping on/off
+║  ✦ ${prefix}settings autoRecording on/off
+║  ✦ ${prefix}settings autoStatusView on/off
+║
+║  💡 *Multi Prefix:* Bisa pake ${config.allowedPrefixes.slice(0, 5).join(', ')} dll
+╚══════════════════════════════════════╝`;
     
     return await sock.sendMessage(sender, { text });
   }
@@ -40,14 +47,25 @@ export default async function settings(context) {
   switch (command) {
     case 'prefix':
       if (!value) {
-        return await sock.sendMessage(sender, { text: '📝 *Contoh:* .settings prefix .' });
+        return await sock.sendMessage(sender, { 
+          text: `📝 *Contoh:* ${prefix}settings prefix .\n\n📌 *Supported prefixes:* ${config.allowedPrefixes.join(', ')}` 
+        });
       }
+      
+      if (!config.allowedPrefixes.includes(value) && value !== '') {
+        return await sock.sendMessage(sender, {
+          text: `❌ Prefix *${value}* tidak didukung!\n\n📌 *Supported prefixes:* ${config.allowedPrefixes.join(', ')}`
+        });
+      }
+      
       await db.setPrefix(value);
-      await sock.sendMessage(sender, { text: `✅ *Prefix changed to:* ${value}` });
+      await sock.sendMessage(sender, { 
+        text: `✅ *Default prefix changed to:* ${value}\n\n📌 *Multi prefix masih aktif:* ${config.allowedPrefixes.join(', ')}`
+      });
       break;
       
     case 'autoread':
-      if (!value) {
+      if (!value || !['on', 'off'].includes(value)) {
         return await sock.sendMessage(sender, { text: '📝 *Contoh:* .settings autoread on/off' });
       }
       const autoRead = value === 'on';
@@ -56,7 +74,7 @@ export default async function settings(context) {
       break;
       
     case 'autotyping':
-      if (!value) {
+      if (!value || !['on', 'off'].includes(value)) {
         return await sock.sendMessage(sender, { text: '📝 *Contoh:* .settings autotyping on/off' });
       }
       const autoTyping = value === 'on';
@@ -65,7 +83,7 @@ export default async function settings(context) {
       break;
       
     case 'autorecording':
-      if (!value) {
+      if (!value || !['on', 'off'].includes(value)) {
         return await sock.sendMessage(sender, { text: '📝 *Contoh:* .settings autorecording on/off' });
       }
       const autoRecording = value === 'on';
@@ -74,7 +92,7 @@ export default async function settings(context) {
       break;
       
     case 'autostatusview':
-      if (!value) {
+      if (!value || !['on', 'off'].includes(value)) {
         return await sock.sendMessage(sender, { text: '📝 *Contoh:* .settings autostatusview on/off' });
       }
       const autoStatusView = value === 'on';
