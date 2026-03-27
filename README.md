@@ -1,6 +1,6 @@
 # 🚀 Nexus-tendo-MD
 
-> Hybrid WhatsApp Bot - Gabungan Terbaik dari Nexus tendo
+> Hybrid WhatsApp Bot - Gabungan dari Nexus tendo - Oura MD
 
 /* 
 credit : Oura MD
@@ -123,16 +123,14 @@ npm install
 
 ```bash
 cp .env.example .env
-# Edit .env dengan data kamu
+# Edit .env dengan data lu
 ```
 
 4. Jalankan Bot
 
 ```bash
-# Development mode
 npm run dev
 
-# Production mode (with PM2)
 npm run pm2
 ```
 
@@ -142,8 +140,8 @@ npm run pm2
 # Bot Configuration
 OWNER_NUMBER=628xxxxxxxxxx
 OWNER_NAME=YourName
-BOT_NAME=QuantumMD
-SESSION_NAME=quantum-session
+BOT_NAME=Nexus-tendo-MD
+SESSION_NAME=nexus-session
 PREFIX=.
 AUTO_READ=false
 AUTO_TYPING=false
