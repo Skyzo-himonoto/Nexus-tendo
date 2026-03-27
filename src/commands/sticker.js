@@ -1,103 +1,76 @@
-const fs = require('fs-extra');
-const path = require('path');
-const ffmpeg = require('fluent-ffmpeg');
-const ffmpegInstaller = require('@ffmpeg-installer/ffmpeg');
+import fs from 'fs-extra';
+import path from 'path';
+import sharp from 'sharp';
+import { randomString } from '../../lib/utils.js';
+import config from '../../config.js';
 
-ffmpeg.setFfmpegPath(ffmpegInstaller.path);
+export default async function sticker(context) {
+  const { sock, m, sender, isGroup, args } = context;
+  
+  const quoted = m.message?.extendedTextMessage?.contextInfo?.quotedMessage;
+  const isImage = quoted?.imageMessage || m.message?.imageMessage;
+  const isVideo = quoted?.videoMessage || m.message?.videoMessage;
+  const isSticker = quoted?.stickerMessage || m.message?.stickerMessage;
+  
+  let media, mimetype, caption;
+  if (isImage) {
+    media = quoted?.imageMessage || m.message?.imageMessage;
+    mimetype = media.mimetype;
+    caption = media.caption || '';
+  } else if (isVideo) {
+    media = quoted?.videoMessage || m.message?.videoMessage;
+    mimetype = media.mimetype;
+    caption = media.caption || '';
+  } else if (isSticker) {
+    media = quoted?.stickerMessage || m.message?.stickerMessage;
+    mimetype = media.mimetype;
+  } else {
+    return await sock.sendMessage(sender, {
+      text: '📝 *Cara membuat sticker:*\n1. Kirim gambar/video dengan caption .sticker\n2. Atau reply gambar/video dengan .sticker\n\n📌 *Fitur:*\n- .stickerwm <teks atas>|<teks bawah> - sticker dengan watermark\n- .toimg - ubah sticker ke gambar'
+    });
+  }
 
-async function stickerCommand(sock, msg, type = 'sticker') {
-    const sender = msg.key.remoteJid;
-    const isQuoted = msg.message?.extendedTextMessage?.contextInfo?.quotedMessage;
-    const text = msg.message?.conversation || msg.message?.extendedTextMessage?.text || '';
-    
-    let mediaMsg = null;
-    let mediaType = null;
-    
-    if (msg.message?.imageMessage) {
-        mediaMsg = msg.message.imageMessage;
-        mediaType = 'image';
-    } else if (msg.message?.videoMessage) {
-        mediaMsg = msg.message.videoMessage;
-        mediaType = 'video';
-    } else if (msg.message?.stickerMessage) {
-        mediaMsg = msg.message.stickerMessage;
-        mediaType = 'sticker';
-    } else if (isQuoted?.imageMessage) {
-        mediaMsg = isQuoted.imageMessage;
-        mediaType = 'image';
-    } else if (isQuoted?.videoMessage) {
-        mediaMsg = isQuoted.videoMessage;
-        mediaType = 'video';
-    } else if (isQuoted?.stickerMessage) {
-        mediaMsg = isQuoted.stickerMessage;
-        mediaType = 'sticker';
-    }
-   
-    if (type === 'ttp' && text && !mediaMsg) {
-        const ttpText = text.replace('.ttp ', '');
-        if (ttpText) {
-            await sock.sendMessage(sender, { text: `🔄 Membuat text sticker...` });
-            await sock.sendMessage(sender, {
-                sticker: { url: `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(ttpText)}` }
-            });
-            return;
-        }
-    }
-    
-    if (!mediaMsg) {
-        await sock.sendMessage(sender, { 
-            text: `❌ *Cara pakai:*\n\n1. Balas gambar/video dengan .stiker\n2. Ketik .ttp [teks] untuk text sticker\n3. Balas video max 10 detik untuk sticker GIF` 
-        });
-        return;
-    }
-    
-    await sock.sendMessage(sender, { text: `🎨 Membuat sticker...` });
-    
-    try {
-        const mediaBuffer = await sock.downloadMediaMessage({
-            message: { 
-                [mediaType === 'image' ? 'imageMessage' : 
-                 mediaType === 'video' ? 'videoMessage' : 'stickerMessage']: mediaMsg 
-            },
-            type: 'buffer'
-        });
-        
-        const tempPath = path.join(__dirname, '../../temp');
-        if (!fs.existsSync(tempPath)) fs.mkdirSync(tempPath, { recursive: true });
-        
-        if (mediaType === 'video') {
-            const inputPath = path.join(tempPath, `input_${Date.now()}.mp4`);
-            const outputPath = path.join(tempPath, `output_${Date.now()}.webp`);
-            
-            fs.writeFileSync(inputPath, mediaBuffer);
-            
-            await new Promise((resolve, reject) => {
-                ffmpeg(inputPath)
-                    .videoFilters('fps=15,scale=512:512:flags=lanczos')
-                    .outputOptions('-loop', '0')
-                    .toFormat('webp')
-                    .on('end', resolve)
-                    .on('error', reject)
-                    .save(outputPath);
-            });
-            
-            const stickerBuffer = fs.readFileSync(outputPath);
-            await sock.sendMessage(sender, { sticker: stickerBuffer });
-            
-            fs.unlinkSync(inputPath);
-            fs.unlinkSync(outputPath);
-        } else {
-            await sock.sendMessage(sender, { sticker: mediaBuffer });
-        }
-        
-    } catch (error) {
-        console.error('Sticker error:', error);
-        await sock.sendMessage(sender, { text: '❌ Gagal membuat stiker' });
-    }
+  const stream = await sock.downloadMediaMessage({
+    key: m.key,
+    message: quoted || m.message
+  });
+  
+  const ext = mimetype.split('/')[1];
+  const inputPath = path.join(config.tempPath, `${randomString()}.${ext}`);
+  const outputPath = path.join(config.tempPath, `${randomString()}.webp`);
+  
+  await fs.writeFile(inputPath, stream);
+  if (isImage || isSticker) {
+    await sharp(inputPath)
+      .resize(512, 512, { fit: 'cover' })
+      .webp({ quality: 80 })
+      .toFile(outputPath);
+  } 
+
+  else if (isVideo) {
+    const { exec } = await import('child_process');
+    const ffmpeg = require('fluent-ffmpeg');    
+    await new Promise((resolve, reject) => {
+      ffmpeg(inputPath)
+        .inputOptions(['-ss 0'])
+        .outputOptions([
+          '-vf', 'scale=512:512:force_original_aspect_ratio=increase,crop=512:512',
+          '-t', '10',
+          '-r', '15',
+          '-loop', '0'
+        ])
+        .toFormat('webp')
+        .on('end', resolve)
+        .on('error', reject)
+        .save(outputPath);
+    });
+  }
+
+  await sock.sendMessage(sender, {
+    sticker: { url: outputPath },
+    mimetype: 'image/webp'
+  });
+
+  await fs.unlink(inputPath);
+  await fs.unlink(outputPath);
 }
-
-async function stickerGifCommand(sock, msg) {
-    await stickerCommand(sock, msg, 'gif');
-}
-
-module.exports = { stickerCommand, stickerGifCommand };
