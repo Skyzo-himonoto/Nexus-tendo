@@ -235,9 +235,13 @@ User Restrictions
 
 Fitur Non-Premium Premium Owner
 Command Limit 50/hari Unlimited Unlimited
+
 ChatGPT ❌ ✅ ✅
+
 Downloader 5x/hari Unlimited Unlimited
+
 Game 10x/hari Unlimited Unlimited
+
 Group Tools ✅ ✅ ✅
 
 Premium Check
