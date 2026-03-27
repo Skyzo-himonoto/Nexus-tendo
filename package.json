@@ -1,27 +1,59 @@
 {
-  "name": "nexus-md",
-  "version": "5.0.0",
-  "description": "Quantum tendo - WhatsApp Bot multi device ",
+  "name": "Nexus-tendo-md",
+  "version": "2.0.0",
+  "description": "Nexus MD",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "pm2": "pm2 start ecosystem.config.js",
+    "pm2:stop": "pm2 stop nexus-md",
+    "pm2:delete": "pm2 delete nexus-md",
+    "pm2:logs": "pm2 logs nexus-md",
+    "pm2:monit": "pm2 monit"
+  },
+  "keywords": [
+    "whatsapp-bot",
+    "baileys",
+    "nexus-md",
+    "nexus-tendo",
+    "oura-md",
+    "whatsapp",
+    "bot",
+    "multi-device",
+    "game-bot",
+    "ai-bot",
+    "downloader-bot"
+  ],
+  "author": "nexus : enjoy your life",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/quantum-md"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
-    "@whiskeysockets/baileys": "^6.7.0",
-    "axios": "^1.6.0",
-    "chalk": "^4.1.2",
-    "dotenv": "^16.3.0",
+    "@hapi/boom": "^10.0.1",
+    "@whiskeysockets/baileys": "^6.7.5",
+    "archiver": "^7.0.1",
+    "axios": "^1.7.2",
+    "chalk": "^5.3.0",
+    "dotenv": "^16.4.5",
     "fluent-ffmpeg": "^2.1.2",
-    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "form-data": "^4.0.0",
     "fs-extra": "^11.2.0",
-    "moment-timezone": "^0.5.43",
-    "pino": "^8.17.0",
-    "ytdl-core": "^4.11.5",
-    "yt-search": "^2.10.3",
-    "lowdb": "^7.0.1"
+    "moment-timezone": "^0.5.45",
+    "node-fetch": "^3.3.2",
+    "pino": "^8.17.2",
+    "qrcode": "^1.5.3",
+    "qrcode-terminal": "^0.12.0",
+    "sharp": "^0.33.4",
+    "ytdl-core": "^4.11.5"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.1.0"
   }
 }
