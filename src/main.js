@@ -1,116 +1,74 @@
-const { default: makeWASocket, useMultiFileAuthState, DisconnectReason, Browsers } = require('@whiskeysockets/baileys');
-const Pino = require('pino');
-const chalk = require('chalk');
-const fs = require('fs-extra');
-const path = require('path');
-const config = require('../config');
-const { handleMessage } = require('./handlers/message');
+import makeWASocket, {
+  useMultiFileAuthState,
+  DisconnectReason,
+  makeInMemoryStore,
+  jidDecode
+} from '@whiskeysockets/baileys';
+import pino from 'pino';
+import { Boom } from '@hapi/boom';
+import config from '../config.js';
+import messageHandler from './handlers/message.js';
+import fs from 'fs-extra';
+import path from 'path';
+import chalk from 'chalk';
 
-const sessionDir = path.join(__dirname, '../sessions', config.sessionName);
-if (!fs.existsSync(sessionDir)) fs.mkdirSync(sessionDir, { recursive: true });
-
-let reconnectAttempts = 0;
-
+const store = makeInMemoryStore({ logger: pino().child({ level: 'silent' }) });
 async function startBot() {
-    const { state, saveCreds } = await useMultiFileAuthState(sessionDir);
+  const { state, saveCreds } = await useMultiFileAuthState(config.sessionsPath);
+  
+  const sock = makeWASocket({
+    auth: state,
+    printQRInTerminal: true,
+    logger: pino({ level: 'silent' }),
+    browser: ['Quantum MD', 'Chrome', '1.0.0'],
+    syncFullHistory: false,
+    markOnlineOnConnect: true,
+    generateHighQualityLinkPreview: true,
+    getMessage: async (key) => {
+      let msg = await store.loadMessage(key.remoteJid, key.id);
+      return msg?.message || undefined;
+    }
+  });
+  
+  store.bind(sock.ev);
+  sock.ev.on('connection.update', async (update) => {
+    const { connection, lastDisconnect, qr } = update;
     
-    const sock = makeWASocket({
-        auth: state,
-        logger: Pino({ level: 'silent' }),
-        printQRInTerminal: false,
-        browser: Browsers.macOS('Desktop'),
-        markOnlineOnConnect: true,
-        syncFullHistory: false,
-        patchWhatsappMaxMsgs: 100
-    });
+    if (qr) {
+      console.log(chalk.yellow('Scan QR Code dengan WhatsApp mu:'));
+    }
     
-    sock.ev.on('creds.update', saveCreds);
-    
-    sock.ev.on('connection.update', async (update) => {
-        const { connection, lastDisconnect } = update;
-        
-        if (connection === 'close') {
-            const statusCode = lastDisconnect?.error?.output?.statusCode;
-            if (statusCode === DisconnectReason.loggedOut) {
-                console.log(chalk.red('\n❌ Session expired, Hapus folder sessions dan restart\n'));
-                fs.removeSync(sessionDir);
-                process.exit(0);
-            } else {
-                reconnectAttempts++;
-                const delay = Math.min(5000 * reconnectAttempts, 30000);
-                console.log(chalk.yellow(`\n🔄 Koneksi putus, reconnect in ${delay/1000}s (Attempt ${reconnectAttempts})\n`));
-                setTimeout(() => startBot(), delay);
-            }
-        } 
-        else if (connection === 'open') {
-            reconnectAttempts = 0;
-            console.log(chalk.green(`
-╔══════════════════════════════════════════════════════════╗
-║     ✅ ${config.botName} - NEXUS TENDO ACTIVE            ║
-╠══════════════════════════════════════════════════════════╣
-║  🤖 Bot    : ${config.botName}
-║  📌 Prefix : ${config.prefix}
-║  👑 Owner  : ${config.getOwnerNumber()}
-║  📦 Version: ${config.version}
-║  🚀 Status : ONLINE 
-╚══════════════════════════════════════════════════════════╝
-            `));
-        }
-    });
-    
-    const ownerNumber = config.getOwnerNumber();
-    console.log(chalk.yellow('\n🔑 [PAIRING MODE] Menghubungkan ke:', ownerNumber));
-    
-    setTimeout(async () => {
-        try {
-            const code = await sock.requestPairingCode(ownerNumber);
-            console.log(chalk.green(`
-╔══════════════════════════════════════════════════════════╗
-║  🔐 *PAIRING CODE*                                       ║
-╠══════════════════════════════════════════════════════════╣
-║                                                          ║
-║     KODE: ${chalk.cyan.bold(code)}                       ║
-║                                                          ║
-║  📌 CARA PAKAI:                                          ║
-║  1. Buka WhatsApp di HP                                  ║
-║  2. Settings > Perangkat Tertaut                         ║
-║  3. Tautkan Perangkat                                    ║
-║  4. Masukkan kode di atas                                ║
-║                                                          ║
-╚══════════════════════════════════════════════════════════╝
-            `));
-        } catch (err) {
-            console.log(chalk.red('\n❌ Gagal generate pairing code:', err.message));
-        }
-    }, 3000);
-    
-    sock.ev.on('messages.upsert', async ({ messages, type }) => {
-        if (type !== 'notify') return;
-        const msg = messages[0];
-        if (!msg.message) return;
-        if (msg.key.fromMe) return;
-        
-        await handleMessage(sock, msg);
-    });
-    
-    sock.ev.on('call', async (calls) => {
-        for (let call of calls) {
-            if (call.isGroup) continue;
-            await sock.rejectCall(call.id, call.from);
-            await sock.sendMessage(call.from, { text: '📞 *Auto Reject*\n\nBot tidak menerima panggilan' });
-        }
-    });
+    if (connection === 'close') {
+      const statusCode = (lastDisconnect?.error as Boom)?.output?.statusCode;
+      const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+      
+      console.log(chalk.red(`Koneksi terputus: ${statusCode}`));
+      
+      if (shouldReconnect) {
+        console.log(chalk.green('Mencoba reconnect...'));
+        startBot();
+      } else {
+        console.log(chalk.red('Session expired, hapus folder sessions dan scan ulang!'));
+      }
+    } else if (connection === 'open') {
+      console.log(chalk.green('✅ Bot berhasil terhubung!'));
+    }
+  });
+  
+  sock.ev.on('creds.update', saveCreds);
+  sock.ev.on('messages.upsert', async (msg) => {
+    try {
+      await messageHandler(sock, msg, store);
+    } catch (err) {
+      console.error('Error handling message:', err);
+    }
+  });
+  
+  sock.ev.on('groups.update', async (updates) => {
+    console.log('Group update:', updates);
+  });
+  
+  return sock;
 }
 
-startBot().catch(err => {
-    console.error(chalk.red('\n❌ Fatal Error:', err.message));
-    setTimeout(() => startBot(), 10000);
-});
-
-process.on('uncaughtException', (err) => {
-    console.error(chalk.red('Uncaught Exception:', err.message));
-});
-
-process.on('unhandledRejection', (reason) => {
-    console.error(chalk.red('Unhandled Rejection:', reason));
-});
+startBot().catch(console.error);
