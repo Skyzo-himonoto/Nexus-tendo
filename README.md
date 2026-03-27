@@ -111,7 +111,7 @@ Nexus-tendo-MD menggabungkan struktur dari **Nexus Tendo** dengan fitur dari **O
 ### 1. Clone Repository
 ```bash
 git clone https://github.com/Skyzo-himonoto/Nexus-tendo
-cd quantum-md
+cd nexus-md
 ```
 
 2. Install Dependencies
