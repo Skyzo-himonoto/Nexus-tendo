@@ -1,75 +1,34 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
 
-module.exports = {
-    owner: "6288225879928",
-    ownerName: "Mustofa",
-    botName: "Nexus tendo MD",
-    version: "5.0.0",
-    prefix: ".",
-    prefixes: [".", "/", "!", "#", "?", "$"],
-    timezone: "Asia/Jakarta",
-    sessionName: "nexus_session",
-    
-    geminiApiKey: process.env.GEMINI_API_KEY || "",
-    weatherApiKey: process.env.WEATHER_API_KEY || "",
-    
-    enableGame: true,
-    enableAnime: true,
-    enableDownloader: true,
-    enableNSFW: false,
-    autoRead: true,
-    autoSaveContact: true,
-    
-    stickerMsg: {
-        processing: "🔄 *nexus* lagi bikin stiker...",
-        success: "✅ *Stiker jadi!*",
-        failed: "❌ *Gagal bikin stiker!*",
-        noMedia: "❌ *Balas gambar/video pake command .stiker*"
-    },
-    
-    aiMsg: {
-        processing: "🤖 *nexus AI* mikir dulu...",
-        noPrompt: "❌ *Cara:* .ai [pertanyaan]",
-        error: "❌ *AI error!* Coba lagi",
-        noApiKey: "❌ *API Key kosong!* Isi di .env"
-    },
-    
-    downloadMsg: {
-        processing: "🔄 *Mendownload* {type}...",
-        success: "✅ *Download berhasil!*\n📌 *{title}*",
-        failed: "❌ *Gagal mendownload.*",
-        noUrl: "❌ *Cara pakai:*\n.{command} [url]",
-        notFound: "❌ *Media tidak ditemukan!*"
-    },
-    
-    groupMsg: {
-        kickSuccess: "✅ *dadah {count} user*",
-        promoteSuccess: "✅ *Berhasil promote {count} user*",
-        demoteSuccess: "✅ *Berhasil demote {count} user*",
-        addSuccess: "✅ *Berhasil menambahkan {count} user*",
-        noMention: "❌ *Tag user yang ingin di-{action}!*",
-        notOwner: "❌ *Command ini hanya untuk owner bot!*",
-        notAdmin: "❌ *Command ini hanya untuk admin grup!*"
-    },
-    
-    converterMsg: {
-        processing: "🔄 *Mengkonversi* {type}...",
-        success: "✅ *Konversi berhasil*",
-        failed: "❌ *Gagal mengkonversi*",
-        noMedia: "❌ *Balas media yang ingin dikonversi*"
-    }
-};
+dotenv.config();
 
-module.exports.isOwner = (number) => {
-    const owners = module.exports.owner.split(",").map(n => n.trim());
-    const cleanNumber = number.split("@")[0];
-    return owners.includes(cleanNumber);
-};
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-module.exports.getOwnerNumber = () => {
-    return module.exports.owner.split(",")[0];
-};
+export default {
+  ownerNumbers: (process.env.OWNER_NUMBER || '').split(',').map(n => n.trim()),
+  ownerName: process.env.OWNER_NAME || 'Nexus',
+  botName: process.env.BOT_NAME || 'NexusMD',
+  
+  sessionName: process.env.SESSION_NAME || 'nexus-session', // jangan diubah
+  prefix: process.env.PREFIX || '.',
+  autoRead: process.env.AUTO_READ === 'true',
+  autoTyping: process.env.AUTO_TYPING === 'true',
+  autoRecording: process.env.AUTO_RECORDING === 'true',
+  autoStatusView: process.env.AUTO_STATUS_VIEW === 'true',
+  
+  __dirname,
+  sessionsPath: join(__dirname, 'sessions'),
+  tempPath: join(__dirname, 'temp'),
+  logsPath: join(__dirname, 'logs'),
+  databasePath: join(__dirname, 'database'),
+  dataPath: join(__dirname, 'data'),
+  assetsPath: join(__dirname, 'assets'),
 
-module.exports.getAllOwners = () => {
-    return module.exports.owner.split(",").map(n => n.trim());
+  maxPremium: parseInt(process.env.MAX_PREMIUM) || 10,
+  openaiKey: process.env.OPENAI_API_KEY || '',
+  geminiKey: process.env.GEMINI_API_KEY || '',
+  timezone: 'Asia/Jakarta'
 };
