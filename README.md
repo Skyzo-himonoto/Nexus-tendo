@@ -216,7 +216,7 @@ MIT License - Bebas digunakan, develop, dan dikembangkan!
 
 📞 Contact
 
-· Owner: 628xxxxxxxxxx
+· Owner: 6285715818953
 · Bot Name: Nexu-tendo-MD
 
 <div align="center">
