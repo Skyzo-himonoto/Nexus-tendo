@@ -1,58 +1,53 @@
-/**
- * ==============================================
- * NEXUS TENDO MD 
- * ==============================================
- * Hanya bisa digunakan oleh owner
- * 
- * ⚠️ PERINGATAN: Fiturnya bahaya bung hati-hati kalo make
- * Hanya digunakan untuk debugging/testing
- * 
- * Cara pakai: .exec [kode javascript]
- * ==============================================
- */
+import { exec as execAsync } from 'child_process';
+import util from 'util';
 
-const { exec } = require('child_process');
-const util = require('util');
-const chalk = require('chalk');
+const exec = util.promisify(execAsync);
 
-const execPromise = util.promisify(exec);
-async function execCommand(sock, sender, code) {
-    if (!code) {
-        await sock.sendMessage(sender, { 
-            text: '❌ *Cara pakai:*\n.exec [kode]\n\nContoh:\n.exec console.log("test")' 
-        });
-        return;
+export default async function execCommand(context) {
+  const { sock, sender, isOwner, args } = context;
+  
+  if (!isOwner) {
+    return await sock.sendMessage(sender, {
+      text: '❌ Maaf, command ini hanya untuk owner bot!'
+    });
+  }
+  
+  if (args.length === 0) {
+    return await sock.sendMessage(sender, {
+      text: '📝 *Cara penggunaan:*\n.exec <command>\n\n📋 *Contoh:*\n.exec ls -la\n.exec node -v\n.exec pm2 list'
+    });
+  }
+  
+  const command = args.join(' ');
+  
+  await sock.sendMessage(sender, {
+    text: `⚙️ *Executing:* ${command}\n\n⏳ Sedang memproses...`
+  });
+  
+  try {
+    const { stdout, stderr } = await exec(command, {
+      timeout: 30000,
+      maxBuffer: 10 * 1024 * 1024 // 10MB
+    });
+    
+    let output = '';
+    if (stdout) {
+      output += `📤 *STDOUT:*\n\`\`\`\n${stdout.slice(0, 4000)}\n\`\`\`\n`;
+    }
+    if (stderr) {
+      output += `⚠️ *STDERR:*\n\`\`\`\n${stderr.slice(0, 4000)}\n\`\`\`\n`;
+    }
+    if (!stdout && !stderr) {
+      output = '✅ *Command executed successfully (no output)*';
     }
     
-    await sock.sendMessage(sender, { text: '🔄 *Mengeksekusi kode...*' });
+    await sock.sendMessage(sender, {
+      text: output.slice(0, 65535) 
+    });
     
-    try {
-        let output;
-        if (code.startsWith('$')) {
-            const command = code.slice(1);
-            const { stdout, stderr } = await execPromise(command);
-            output = stdout || stderr || 'No output';
-        } else {
-            let result = eval(code);
-            output = util.inspect(result, { depth: null, colors: false });
-        }
-        
-        if (output.length > 4000) {
-            output = output.substring(0, 4000) + '\n\n... (output dipotong)';
-        }
-        
-        await sock.sendMessage(sender, { 
-            text: `✅ *Hasil eksekusi:*\n\`\`\`\n${output}\n\`\`\`` 
-        });
-        
-        console.log(chalk.blue(`\n🔧 [EXEC] Kode dieksekusi oleh owner\n`));
-        
-    } catch (error) {
-        console.error(chalk.red('Exec error:', error));
-        await sock.sendMessage(sender, { 
-            text: `❌ *Error:*\n\`\`\`\n${error.message}\n\`\`\`` 
-        });
-    }
+  } catch (err) {
+    await sock.sendMessage(sender, {
+      text: `❌ *Error:*\n\`\`\`\n${err.message.slice(0, 4000)}\n\`\`\``
+    });
+  }
 }
-
-module.exports = { execCommand };
