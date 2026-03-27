@@ -1,58 +1,100 @@
-/**
- * ==============================================
- * NEXUS TENDO MD 
- * ==============================================
- * Hanya bisa digunakan oleh owner
- * 
- * Cara pakai: .get [nama file]
- * Contoh: .get config.js
- * ==============================================
- */
+import axios from 'axios';
+import fs from 'fs-extra';
+import path from 'path';
+import { randomString, isValidUrl } from '../../lib/utils.js';
+import config from '../../config.js';
 
-const fs = require('fs-extra');
-const path = require('path');
-const chalk = require('chalk');
-
-async function getCommand(sock, sender, filename) {
-    if (!filename) {
-        await sock.sendMessage(sender, { 
-            text: '❌ *Cara pakai:*\n.get [nama file]\n\nContoh:\n.get config.js\n.get sessions/creds.json' 
-        });
-        return;
+export default async function get(context) {
+  const { sock, sender, isOwner, args } = context;
+  
+  if (!isOwner) {
+    return await sock.sendMessage(sender, {
+      text: '❌ Maaf, command ini hanya untuk owner bot!'
+    });
+  }
+  
+  if (args.length === 0) {
+    return await sock.sendMessage(sender, {
+      text: '📝 *Cara penggunaan:*\n.get <url>\n\n📋 *Contoh:*\n.get https://example.com/image.jpg\n.get https://example.com/file.pdf\n\n📌 *Fitur:*\n- Download file dari URL\n- Auto detect file type\n- Max size 50MB'
+    });
+  }
+  
+  const url = args[0];
+  
+  if (!isValidUrl(url)) {
+    return await sock.sendMessage(sender, {
+      text: '❌ URL tidak valid!'
+    });
+  }
+  
+  await sock.sendMessage(sender, {
+    text: '📥 *Downloading file...*\nMohon tunggu sebentar.'
+  });
+  
+  try {
+    const headResponse = await axios.head(url);
+    const contentType = headResponse.headers['content-type'];
+    const contentLength = parseInt(headResponse.headers['content-length'] || 0);
+    
+    if (contentLength > 50 * 1024 * 1024) {
+      return await sock.sendMessage(sender, {
+        text: `❌ File terlalu besar! Maksimal 50MB.\n📦 *Size:* ${(contentLength / 1024 / 1024).toFixed(2)}MB`
+      });
     }
     
-    const allowedFiles = ['config.js', 'package.json', '.env', 'sessions/creds.json'];
-    const isAllowed = allowedFiles.some(f => filename.includes(f));
+    const response = await axios({
+      method: 'GET',
+      url: url,
+      responseType: 'stream'
+    });
     
-    if (!isAllowed && !filename.startsWith('src/commands/')) {
-        await sock.sendMessage(sender, { text: '❌ Akses ditolak! File tidak diizinkan.' });
-        return;
+    const ext = contentType.split('/')[1] || 'bin';
+    const filename = `${randomString()}.${ext}`;
+    const filepath = path.join(config.tempPath, filename);
+    
+    const writer = fs.createWriteStream(filepath);
+    response.data.pipe(writer);
+    
+    await new Promise((resolve, reject) => {
+      writer.on('finish', resolve);
+      writer.on('error', reject);
+    });
+    
+    const stats = await fs.stat(filepath);
+    const sizeMB = (stats.size / 1024 / 1024).toFixed(2);
+    
+    if (contentType.startsWith('image/')) {
+      await sock.sendMessage(sender, {
+        image: { url: filepath },
+        caption: `🖼️ *Image Downloaded*\n\n🔗 *Source:* ${url}\n📦 *Size:* ${sizeMB}MB`
+      });
+    } else if (contentType.startsWith('video/')) {
+      await sock.sendMessage(sender, {
+        video: { url: filepath },
+        caption: `🎬 *Video Downloaded*\n\n🔗 *Source:* ${url}\n📦 *Size:* ${sizeMB}MB`,
+        mimetype: contentType
+      });
+    } else if (contentType.startsWith('audio/')) {
+      await sock.sendMessage(sender, {
+        audio: { url: filepath },
+        mimetype: contentType,
+        fileName: filename,
+        caption: `🎵 *Audio Download*\n\n🔗 *Source:* ${url}\n📦 *Size:* ${sizeMB}MB`
+      });
+    } else {
+      await sock.sendMessage(sender, {
+        document: { url: filepath },
+        mimetype: contentType,
+        fileName: filename,
+        caption: `📄 *File Downloaded*\n\n🔗 *Source:* ${url}\n📦 *Size:* ${sizeMB}MB\n📁 *Type:* ${contentType}`
+      });
     }
     
-    const filePath = path.join(__dirname, '../../', filename);
+    await fs.unlink(filepath);
     
-    if (!fs.existsSync(filePath)) {
-        await sock.sendMessage(sender, { text: `❌ File tidak ditemukan: ${filename}` });
-        return;
-    }
-    
-    try {
-        const fileContent = fs.readFileSync(filePath);
-        const stats = fs.statSync(filePath);
-        
-        await sock.sendMessage(sender, {
-            document: fileContent,
-            mimetype: 'application/octet-stream',
-            fileName: filename,
-            caption: `📁 *File:* ${filename}\n📦 *Size:* ${(stats.size / 1024).toFixed(2)} KB`
-        });
-        
-        console.log(chalk.blue(`\n📁 [GET] File ${filename} dikirim ke owner\n`));
-        
-    } catch (error) {
-        console.error(chalk.red('Get file error:', error));
-        await sock.sendMessage(sender, { text: `❌ Gagal mengambil file: ${error.message}` });
-    }
+  } catch (err) {
+    await sock.sendMessage(sender, {
+      text: `❌ *Download failed:* ${err.message}`
+    });
+  }
 }
-
-module.exports = { getCommand };
