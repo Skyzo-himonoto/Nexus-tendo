@@ -210,8 +210,12 @@ MIT License - Bebas digunakan, develop, dan dikembangkan!
 
 ✉️ Credits
 
-· Nexus Tendo - Struktur & database system
+· Nexus Tendo - Struktur & database sendiri 
+
+
 · Oura MD - Game system & fitur lengkap
+
+
 · Baileys - WhatsApp Multi-Device library
 
 📞 Contact
