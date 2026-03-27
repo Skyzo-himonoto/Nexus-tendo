@@ -139,61 +139,27 @@ npm run pm2
 ```env
 # Bot Configuration
 OWNER_NUMBER=628xxxxxxxxxx
-OWNER_NAME=YourName
-BOT_NAME=Nexus-tendo-MD
+OWNER_NAME=Nexus
+BOT_NAME=NexusMD
 SESSION_NAME=nexus-session
+
+# Default Prefix (bisa diubah via .settings)
 PREFIX=.
+
+# Multi Prefix didukung otomatis: ., !, /, #, ?, $, &, @, +, -, =, ;, :, ~, `, |, ^, %
+# User bisa pake salah satu dari prefix di atas
+
 AUTO_READ=false
 AUTO_TYPING=false
 AUTO_RECORDING=false
 AUTO_STATUS_VIEW=true
+MAX_PREMIUM=10
 
-# API Keys (Optional)
-OPENAI_API_KEY=your_openai_key
-GEMINI_API_KEY=your_gemini_key
-```
+# API Keys
+OPENAI_API_KEY=
+GEMINI_API_KEY=
 
-📁 Struktur Folder
-
-```
-Nexus-tendo-MD/
-├── .env                    # Konfigurasi bot
-├── package.json           
-├── config.js              
-├── index.js               
-├── ecosystem.config.js    
-│
-├── src/
-│   ├── main.js            # Main bot 
-│   ├── handlers/          
-│   │   ├── message.js
-│   │   ├── group.js
-│   │   ├── call.js
-│   │   └── status.js
-│   └── commands/          # fitur lengkap (40+ files)
-│
-├── lib/                   # Perpustakaan inti
-│   ├── database/          # Basis data
-│   ├── gameManager.js     # fitur games
-│   ├── downloader.js      # Downloads 
-│   ├── ai.js              # terintegrasi AI
-│   ├── utils.js           # Utilitas 
-│   ├── functions.js       # Fungsi pembantu
-│   └── uploader.js        # upload dokumen
-│
-├── database/
-│   └── games/            # 25+ base game
-│
-├── data/                 # base json
-│   ├── users.json
-│   ├── groups.json
-│   ├── premium.json
-│   └── ...
-│
-├── assets/               # Aset statis
-├── sessions/             # versi WhatsApp 
-├── temp/                 # File sementara
-└── logs/                 # File log
+TIMEZONE=Asia/Jakarta
 ```
 
 🎮 Cara Main Game
