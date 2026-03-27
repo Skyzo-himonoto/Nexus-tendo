@@ -14,7 +14,7 @@
 ## 👑 Owner & Admin Security
 
 ### Owner Configuration
-```env
+.env
 OWNER_NUMBER=6285715818953,6285715818953  # Bisa multiple owner
 OWNER_NAME=YourName
 ```
