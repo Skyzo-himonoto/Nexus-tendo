@@ -11,13 +11,10 @@
 7. [Rate Limiting](#rate-limiting)
 8. [Best Practices](#best-practices)
 
----
-
 ## 👑 Owner & Admin Security
 
 ### Owner Configuration
 ```env
-# Di file .env
 OWNER_NUMBER=6285715818953,6285715818953  # Bisa multiple owner
 OWNER_NAME=YourName
 ```
