@@ -16,7 +16,7 @@
 ### Owner Configuration
 .env
 OWNER_NUMBER=6285715818953,6285715818953  # Bisa multiple owner
-OWNER_NAME=YourName
+OWNER_NAME=Nexus 
 ```
 
 Owner Commands (Hanya bisa diakses owner)
