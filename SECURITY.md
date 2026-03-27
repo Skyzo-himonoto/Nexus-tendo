@@ -131,7 +131,7 @@ Bot support berbagai prefix:
 
 Bisa ditambahin di awal atau di section masing-masing:
 
-```markdown
+```
 ## ✨ Fitur Keamanan yang Didukung
 
 | Fitur | Status | Keterangan |
@@ -192,7 +192,6 @@ function decryptData(encrypted, key) {
 }
 ```
 
----
 
 🔐 Session Security
 
@@ -238,7 +237,6 @@ if (statusCode === DisconnectReason.loggedOut) {
 }
 ```
 
----
 
 🔑 API Key Security
 
@@ -270,7 +268,6 @@ OpenAI 20 req/menit Queue system
 Gemini 60 req/menit Queue system
 Blackbox Unlimited -
 
----
 
 🚫 Command Restrictions
 
@@ -318,7 +315,6 @@ const isBotAdmin = groupMetadata.participants.find(
 );
 ```
 
----
 
 ⏱️ Rate Limiting System
 
@@ -372,7 +368,6 @@ function checkGroupSpam(groupId, userId) {
 }
 ```
 
----
 
 📁 File Security
 
@@ -411,7 +406,7 @@ function validateFile(filePath) {
 }
 ```
 
----
+
 
 🚨 Security Checklist
 
@@ -439,7 +434,7 @@ Jika Terjadi Masalah
 3. Bot di-spam → Aktifkan anti spam
 4. Data bocor → Restore dari backup
 
----
+
 
 📞 Report Security Issue
 
@@ -449,7 +444,7 @@ Jika menemukan vulnerability:
 2. Jangan exploitasi
 3. Berikan detail lengkap
 
----
+
 
 📜 Security Updates
 
@@ -459,33 +454,17 @@ Date Version Update
 - - Rate limiting
 - - Premium system
 
----
 
 ⚠️ PENTING:
 
 · Jangan pernah share file sessions/creds.json
+
 · Jangan pernah commit .env ke repository publik
+
 · Gunakan password yang kuat untuk VPS/panel
+
 · Backup database secara rutin
 
----
 
 Made with 🔒 by Nexus tendo - nexus core
 
-```
-
----
-
-Udah bang! `security.md` ini mencakup:
-
-| Section | Isi |
-|---------|-----|
-| Owner Security | Multi owner, command restrictions |
-| Anti Spam/Link | Proteksi spam dan link berbahaya |
-| Database Security | Backup, enkripsi, struktur data |
-| Session Security | Proteksi session, backup |
-| API Key Security | Cara simpan API key, rate limiting |
-| Command Restrictions | Premium system, admin check |
-| Rate Limiting | Limit per user dan grup |
-| File Security | Validasi upload, auto cleanup |
-| Checklist | Langkah sebelum dan saat deploy |
