@@ -102,7 +102,50 @@ Rate Limiting
 .limit
 ```
 
----
+### 1. **Authentication Mode**
+
+Bot support 2 mode autentikasi:
+
+| Mode | Cara | Kelebihan |
+|------|------|-----------|
+| **QR Code** | Scan QR di terminal | Support semua versi WA |
+| **Pairing Code** | Input kode 8 digit | Lebih cepat, gak perlu scan |
+
+```env
+# Pilih mode di .env
+AUTH_MODE=qr        # atau pairing
+```
+
+### 2. ** Multi Prefix Support**
+
+Di bagian Command Restrictions, bisa ditambahin:
+
+```markdown
+### Multi Prefix Support
+
+Bot support berbagai prefix:
+., !, /, #, ?, $, &, @, +, -, =, ;, :, ~, `, |, ^, %
+```
+
+3. Tambahan Fitur yang Didukung
+
+Bisa ditambahin di awal atau di section masing-masing:
+
+```markdown
+## ✨ Fitur Keamanan yang Didukung
+
+| Fitur | Status | Keterangan |
+|-------|--------|------------|
+| Multi Owner | ✅ | Support lebih dari 1 owner |
+| Anti Link | ✅ | Detect & delete link otomatis |
+| Anti Spam | ✅ | Limit pesan per user |
+| Rate Limiting | ✅ | 50 command/hari untuk user biasa |
+| Auto Backup | ✅ | Backup database & session |
+| Session Encryption | ⚠️ | Opsional, pake AES-256 |
+| Premium System | ✅ | Unlimited fitur untuk premium user |
+| Multi Prefix | ✅ | Support 18+ prefix berbeda |
+| Dual Auth Mode | ✅ | QR Code & Pairing Code |
+```
 
 💾 Database Security
 
