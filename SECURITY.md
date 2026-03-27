@@ -23,14 +23,24 @@ Owner Commands (Hanya bisa diakses owner)
 
 Command Fungsi Restriction
 .exec Execute terminal command ✅ Owner Only
+
 .eval Evaluate JavaScript ✅ Owner Only
+
 .bc Broadcast ke semua chat ✅ Owner Only
+
 .addprem Tambah premium user ✅ Owner Only
+
 .delprem Hapus premium user ✅ Owner Only
+
 .restart Restart bot ✅ Owner Only
+
 .backup Backup database ✅ Owner Only
+
 .get Download file dari URL ✅ Owner Only
+
 .sewa Manage sewa bot ✅ Owner Only
+
+
 .settings Ubah pengaturan bot ✅ Owner Only
 
 Multi Owner Support
