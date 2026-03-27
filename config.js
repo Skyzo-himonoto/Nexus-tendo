@@ -8,12 +8,58 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 export default {
-  ownerNumbers: (process.env.OWNER_NUMBER || '').split(',').map(n => n.trim()),
-  ownerName: process.env.OWNER_NAME || 'Nexus',
   botName: process.env.BOT_NAME || 'NexusMD',
+  version: '2.0.0',
   
-  sessionName: process.env.SESSION_NAME || 'nexus-session', // jangan diubah
+  ownerNumbers: (process.env.OWNER_NUMBER || '').split(',').map(n => n.trim()),
+  ownerName: process.env.OWNER_NAME || 'nexus',
+  
+  getOwnerNumber: () => {
+    const owner = process.env.OWNER_NUMBER || '';
+    let number = owner.split(',')[0];
+    number = number.replace('@s.whatsapp.net', '');
+    number = number.replace(/[^0-9]/g, '');
+    return number || '628xxx';
+  },
+  
+  getOwnerNumbers: () => {
+    const owners = process.env.OWNER_NUMBER || '';
+    return owners.split(',').map(n => n.replace('@s.whatsapp.net', '').replace(/[^0-9]/g, ''));
+  },
+  
+  getOwnerJids: () => {
+    const owners = process.env.OWNER_NUMBER || '';
+    return owners.split(',').map(n => {
+      let number = n.replace(/[^0-9]/g, '');
+      if (number.startsWith('0')) number = '62' + number.slice(1);
+      return number + '@s.whatsapp.net';
+    });
+  },
+  
   prefix: process.env.PREFIX || '.',
+  allowedPrefixes: [
+    '.',     
+    '!',     
+    '/',     
+    '#',     
+    '?',     
+    '$',     
+    '&',     
+    '@',     
+    '+',     
+    '-',     
+    '=',     
+    ';',     
+    ':',     
+    '~',     
+    '`',     
+    '|',     
+    '^',     
+    '%'      
+  ],
+  
+  sessionName: process.env.SESSION_NAME || 'nexus-session',
+ 
   autoRead: process.env.AUTO_READ === 'true',
   autoTyping: process.env.AUTO_TYPING === 'true',
   autoRecording: process.env.AUTO_RECORDING === 'true',
@@ -26,9 +72,26 @@ export default {
   databasePath: join(__dirname, 'database'),
   dataPath: join(__dirname, 'data'),
   assetsPath: join(__dirname, 'assets'),
-
-  maxPremium: parseInt(process.env.MAX_PREMIUM) || 10,
+  
+  maxPremium: parseInt(process.env.MAX_PREMIUM) || 50,
   openaiKey: process.env.OPENAI_API_KEY || '',
   geminiKey: process.env.GEMINI_API_KEY || '',
-  timezone: 'Asia/Jakarta'
+  
+  timezone: process.env.TIMEZONE || 'Asia/Jakarta',
+  
+  botNumber: null,
+  botJid: null,
+  
+  setBotNumber: (number) => {
+    config.botNumber = number;
+    config.botJid = number + '@s.whatsapp.net';
+  },
+  
+  getBotNumber: () => {
+    return config.botNumber || 'Belum terhubung';
+  },
+  
+  getBotJid: () => {
+    return config.botJid || null;
+  }
 };
