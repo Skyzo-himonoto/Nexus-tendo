@@ -21,7 +21,7 @@ async function startBot() {
     auth: state,
     printQRInTerminal: true,
     logger: pino({ level: 'silent' }),
-    browser: ['Quantum MD', 'Chrome', '1.0.0'],
+    browser: ['Nexus tendo MD', 'Chrome', '1.0.0'],
     syncFullHistory: false,
     markOnlineOnConnect: true,
     generateHighQualityLinkPreview: true,
