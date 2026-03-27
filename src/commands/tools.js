@@ -1,169 +1,222 @@
-const axios = require('axios');
-const config = require('../../config');
+import axios from 'axios';
+import qrcode from 'qrcode';
+import fs from 'fs-extra';
+import path from 'path';
+import { randomString, isValidUrl } from '../../lib/utils.js';
+import config from '../../config.js';
+import ai from '../../lib/ai.js';
 
-async function toolsCommand(sock, sender, command, args) {
-    const text = args.join(' ');
-    
-    switch(command) {
-        case 'qrcode':
-            if (!text) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ Masukkan teks/link untuk QR Code!\nContoh: .qrcode https://nexus.com' 
-                });
-                return;
-            }
-            await sock.sendMessage(sender, { text: `🔄 Membuat QR Code untuk: ${text}` });
-            await sock.sendMessage(sender, {
-                image: { url: `https://api.qrserver.com/v1/create-qr-code/?size=500x500&data=${encodeURIComponent(text)}` },
-                caption: `📱 *QR Code*\n\nData: ${text}\nScan untuk akses langsung.`
-            });
-            break;
-            
-        case 'weather':
-            if (!text) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ Masukkan nama kota!\nContoh: .weather Jakarta' 
-                });
-                return;
-            }
-            
-            if (!config.weatherApiKey) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ API Key weather belum diisi! Dapatkan di https://openweathermap.org/api' 
-                });
-                return;
-            }
-            
-            await sock.sendMessage(sender, { text: `🌤️ Mencari cuaca di ${text}...` });
-            
-            try {
-                const response = await axios.get(
-                    `https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(text)}&appid=${config.weatherApiKey}&units=metric&lang=id`
-                );
-                
-                const data = response.data;
-                const weatherText = `🌤️ *Cuaca di ${data.name}*\n\n` +
-                    `🌡️ *Suhu:* ${data.main.temp}°C\n` +
-                    `🌡️ *Terasa:* ${data.main.feels_like}°C\n` +
-                    `💧 *Kelembapan:* ${data.main.humidity}%\n` +
-                    `🌬️ *Angin:* ${data.wind.speed} m/s\n` +
-                    `☁️ *Kondisi:* ${data.weather[0].description}\n` +
-                    `🔆 *Tekanan:* ${data.main.pressure} hPa`;
-                
-                await sock.sendMessage(sender, { text: weatherText });
-            } catch (error) {
-                await sock.sendMessage(sender, { text: '❌ Kota tidak ditemukan! Coba lagi.' });
-            }
-            break;
-            
-        case 'translate':
-            if (!text) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ Cara pakai:\n.translate [kode] [teks]\n\nContoh:\n.translate id Hello World\n\nKode: id, en, jp, etc' 
-                });
-                return;
-            }
-            
-            const parts = text.split(' ');
-            const targetLang = parts[0];
-            const textToTranslate = parts.slice(1).join(' ');
-            
-            if (!targetLang || !textToTranslate) {
-                await sock.sendMessage(sender, { text: '❌ Format salah! Contoh: .translate id Hello World' });
-                return;
-            }
-            
-            try {
-                const response = await axios.get(
-                    `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${targetLang}&dt=t&q=${encodeURIComponent(textToTranslate)}`
-                );
-                
-                const translated = response.data[0][0][0];
-                await sock.sendMessage(sender, { 
-                    text: `🌍 *Terjemahan*\n\n` +
-                        `📝 *Asli:* ${textToTranslate}\n` +
-                        `🔄 *Hasil:* ${translated}\n` +
-                        `🎯 *Bahasa:* ${targetLang.toUpperCase()}` 
-                });
-            } catch (error) {
-                await sock.sendMessage(sender, { text: '❌ Gagal menerjemahkan! Coba lagi.' });
-            }
-            break;
-            
-        case 'shortlink':
-            if (!text) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ Masukkan link yang ingin dipendekkan!\nContoh: .shortlink https://panjang.com' 
-                });
-                return;
-            }
-            
-            await sock.sendMessage(sender, { text: `🔄 Memendekkan link...` });
-            
-            try {
-                const response = await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(text)}`);
-                const shortUrl = response.data;
-                await sock.sendMessage(sender, { 
-                    text: `🔗 *Short Link*\n\n📌 *Asli:* ${text}\n📌 *Pendek:* ${shortUrl}` 
-                });
-            } catch (error) {
-                await sock.sendMessage(sender, { text: '❌ Gagal memendekkan link!' });
-            }
-            break;
-            
-        case 'bin':
-            if (!text) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ Masukkan BIN!\nContoh: .bin 453997' 
-                });
-                return;
-            }
-            
-            try {
-                const response = await axios.get(`https://lookup.binlist.net/${text}`);
-                const data = response.data;
-                
-                const binText = `💳 *BIN CHECKER*\n\n` +
-                    `🔢 *BIN:* ${text}\n` +
-                    `🏦 *Bank:* ${data.bank?.name || '-'}\n` +
-                    `🌍 *Negara:* ${data.country?.name || '-'}\n` +
-                    `💳 *Tipe:* ${data.scheme || '-'}\n` +
-                    `🏷️ *Brand:* ${data.brand || '-'}`;
-                
-                await sock.sendMessage(sender, { text: binText });
-            } catch (error) {
-                await sock.sendMessage(sender, { text: '❌ BIN tidak valid atau tidak ditemukan!' });
-            }
-            break;
-            
-        case 'calc':
-            if (!text) {
-                await sock.sendMessage(sender, { 
-                    text: '❌ Masukkan perhitungan!\nContoh: .calc 1+1\n.calc 10*5' 
-                });
-                return;
-            }
-            
-            try {
-                const allowedChars = /^[0-9+\-*/%.() ]+$/;
-                if (!allowedChars.test(text)) {
-                    await sock.sendMessage(sender, { text: '❌ Ekspresi tidak valid! Hanya angka dan operator (+ - * / %).' });
-                    return;
-                }
-                
-                const result = eval(text);
-                await sock.sendMessage(sender, { 
-                    text: `🧮 *KALKULATOR*\n\n📌 *Input:* ${text}\n📌 *Hasil:* ${result}` 
-                });
-            } catch (error) {
-                await sock.sendMessage(sender, { text: '❌ Perhitungan tidak valid!' });
-            }
-            break;
-            
-        default:
-            await sock.sendMessage(sender, { text: '❌ Fitur tools dalam pengembangan!' });
-            break;
+export default async function tools(context) {
+  const { sock, sender, args, prefix } = context;
+  
+  if (args.length === 0) {
+    return await sock.sendMessage(sender, {
+      text: `╭━━━━━ *TOOLS MENU* ━━━━━╮
+┃
+┃ 🛠️ *Fitur Tools:*
+┃
+┃ ✦ ${prefix}qrcode <teks/link>
+┃ ✦ ${prefix}tts <kode_bahasa> <teks>
+┃ ✦ ${prefix}translate <kode_bahasa> <teks>
+┃ ✦ ${prefix}styletext <teks>
+┃ ✦ ${prefix}calc <angka> <operator> <angka>
+┃ ✦ ${prefix}shorturl <link>
+┃ ✦ ${prefix}weather <kota>
+┃ ✦ ${prefix}whois <nomor>
+┃
+┃ 📌 *Contoh:*
+┃ ${prefix}qrcode https://example.com
+┃ ${prefix}tts id Halo dunia
+┃ ${prefix}translate en Hello world
+┃ ${prefix}calc 10 + 5
+┃
+╰━━━━━━━━━━━━━━━━━━━╯`
+    });
+  }
+  
+  const command = args[0].toLowerCase();
+  const params = args.slice(1);
+  if (command === 'qrcode') {
+    if (params.length === 0) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .qrcode https://example.com' });
     }
-}
+    
+    const text = params.join(' ');
+    const qrPath = path.join(config.tempPath, `${randomString()}.png`);
+    
+    await qrcode.toFile(qrPath, text, { width: 500 });
+    
+    await sock.sendMessage(sender, {
+      image: { url: qrPath },
+      caption: `📱 *QR Code*\n\n🔗 *Content:* ${text}`
+    });
+    
+    await fs.unlink(qrPath);
+  }
 
-module.exports = { toolsCommand };
+  else if (command === 'tts') {
+    if (params.length < 2) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .tts id Halo dunia\n\n🌍 *Kode bahasa:* id, en, ja, ko, etc' });
+    }
+    
+    const lang = params[0];
+    const text = params.slice(1).join(' ');
+    
+    const result = await ai.textToSpeech(text, lang);
+    
+    if (result.success) {
+      await sock.sendMessage(sender, {
+        audio: { url: result.url },
+        mimetype: 'audio/mpeg',
+        fileName: `tts_${lang}.mp3`,
+        caption: `🔊 *Text to Speech*\n🌍 *Language:* ${lang}\n📝 *Text:* ${text}`
+      });
+    } else {
+      await sock.sendMessage(sender, { text: `❌ *Error:* ${result.error}` });
+    }
+  }
+  
+  else if (command === 'translate') {
+    if (params.length < 2) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .translate en Halo dunia\n\n🌍 *Kode bahasa:* id, en, ja, ko, etc' });
+    }
+    
+    const targetLang = params[0];
+    const text = params.slice(1).join(' ');
+    
+    const result = await ai.translate(text, targetLang);
+    
+    if (result.success) {
+      await sock.sendMessage(sender, {
+        text: `🌐 *Translator*\n\n📝 *Original:* ${result.original}\n🌍 *Target:* ${targetLang}\n✨ *Result:* ${result.text}`
+      });
+    } else {
+      await sock.sendMessage(sender, { text: `❌ *Error:* ${result.error}` });
+    }
+  }
+  
+  else if (command === 'styletext') {
+    if (params.length === 0) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .styletext Hello World' });
+    }
+    
+    const text = params.join(' ');
+    
+    const styles = {
+      'bold': text.split('').map(c => String.fromCodePoint(c.charCodeAt(0) + 120356)).join(''),
+      'italic': text.split('').map(c => String.fromCodePoint(c.charCodeAt(0) + 120328)).join(''),
+      'script': text.split('').map(c => String.fromCodePoint(c.charCodeAt(0) + 120224)).join(''),
+      'fraktur': text.split('').map(c => String.fromCodePoint(c.charCodeAt(0) + 120148)).join(''),
+      'double': text.split('').map(c => String.fromCodePoint(c.charCodeAt(0) + 120120)).join('')
+    };
+    
+    let result = `✨ *Style Text*\n\n📝 *Original:* ${text}\n\n`;
+    result += `🔤 *Bold:* ${styles.bold}\n`;
+    result += `📖 *Italic:* ${styles.italic}\n`;
+    result += `✍️ *Script:* ${styles.script}\n`;
+    result += `🖋️ *Fraktur:* ${styles.fraktur}\n`;
+    result += `🔲 *Double:* ${styles.double}\n`;
+    
+    await sock.sendMessage(sender, { text: result });
+  }
+  
+  else if (command === 'calc') {
+    if (params.length < 3) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .calc 10 + 5\n\n🔢 *Operator:* +, -, *, /, %' });
+    }
+    
+    const num1 = parseFloat(params[0]);
+    const operator = params[1];
+    const num2 = parseFloat(params[2]);
+    
+    let result;
+    switch (operator) {
+      case '+': result = num1 + num2; break;
+      case '-': result = num1 - num2; break;
+      case '*': result = num1 * num2; break;
+      case '/': result = num1 / num2; break;
+      case '%': result = num1 % num2; break;
+      default: return await sock.sendMessage(sender, { text: '❌ Operator tidak valid!' });
+    }
+    
+    await sock.sendMessage(sender, {
+      text: `🧮 *Calculator*\n\n${num1} ${operator} ${num2} = *${result}*`
+    });
+  }
+  
+  else if (command === 'shorturl') {
+    if (params.length === 0) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .shorturl https://example.com' });
+    }
+    
+    const url = params[0];
+    
+    if (!isValidUrl(url)) {
+      return await sock.sendMessage(sender, { text: '❌ URL tidak valid!' });
+    }
+    
+    try {
+      const response = await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+      const shortUrl = response.data;
+      
+      await sock.sendMessage(sender, {
+        text: `🔗 *Short URL*\n\n📝 *Original:* ${url}\n✨ *Short:* ${shortUrl}`
+      });
+    } catch (err) {
+      await sock.sendMessage(sender, { text: `❌ *Error:* ${err.message}` });
+    }
+  }
+  
+  else if (command === 'weather') {
+    if (params.length === 0) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .weather jakarta' });
+    }
+    
+    const city = params.join(' ');
+    
+    try {
+      const response = await axios.get(`https://api.openweathermap.org/data/2.5/weather?q=${encodeURIComponent(city)}&appid=YOUR_API_KEY&units=metric&lang=id`);
+      const data = response.data;
+      
+      const text = `╭━━━━━ *WEATHER INFO* ━━━━━╮
+┃
+┃ 🌍 *Kota:* ${data.name}, ${data.sys.country}
+┃ 🌡️ *Suhu:* ${data.main.temp}°C
+┃ 🔥 *Feels Like:* ${data.main.feels_like}°C
+┃ 💧 *Kelembapan:* ${data.main.humidity}%
+┃ 🌬️ *Angin:* ${data.wind.speed} m/s
+┃ ☁️ *Cuaca:* ${data.weather[0].description}
+┃
+╰━━━━━━━━━━━━━━━━━━━╯`;
+      
+      await sock.sendMessage(sender, { text });
+    } catch (err) {
+      await sock.sendMessage(sender, { text: `❌ Kota *${city}* tidak ditemukan!` });
+    }
+  }
+
+  else if (command === 'whois') {
+    if (params.length === 0) {
+      return await sock.sendMessage(sender, { text: '📝 *Contoh:* .whois 6285715818953' });
+    }
+    
+    let number = params[0].replace(/[^0-9]/g, '');
+    if (number.startsWith('0')) number = '62' + number.slice(1);
+    const jid = number + '@s.whatsapp.net';
+    
+    try {
+      const presence = await sock.presenceSubscribe(jid);
+      const status = await sock.getStatus(jid);
+      
+      const text = `👤 *User Info*\n\n📱 *Number:* ${number}\n🟢 *Status:* ${presence ? 'Online' : 'Offline'}\n📝 *Bio:* ${status?.status || 'Tidak ada bio'}`;
+      
+      await sock.sendMessage(sender, { text });
+    } catch (err) {
+      await sock.sendMessage(sender, { text: `❌ Tidak dapat mengambil info user: ${err.message}` });
+    }
+  }
+  
+  else {
+    await sock.sendMessage(sender, { text: `❌ Tools *${command}* tidak dikenal!\n\nGunakan .tools untuk melihat daftar command.` });
+  }
+}
