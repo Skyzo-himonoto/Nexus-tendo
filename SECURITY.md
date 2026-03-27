@@ -21,7 +21,8 @@ OWNER_NAME=YourName
 
 Owner Commands (Hanya bisa diakses owner)
 
-Command Fungsi Restriction
+Command Fungsi Pembatasan
+
 .exec Execute terminal command ✅ Owner Only
 
 .eval Evaluate JavaScript ✅ Owner Only
