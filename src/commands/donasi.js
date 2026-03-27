@@ -1,29 +1,30 @@
-const config = require('../../config');
-async function donasiCommand(sock, sender) {
-    const ownerNumber = config.getOwnerNumber();
-    
-    await sock.sendMessage(sender, { 
-        text: `💝 *Dukung Developer buat makan ${config.botName}*
-
-Bot ini gratis dan akan terus dikembangkan. 
-Dukunganmu membuat bot ini tetap hidup!
-
-💰 *Donasi via:*
-• Dana: ${ownerNumber}
-• Ovo: ${ownerNumber}
-• Gopay: ${ownerNumber}
-• QRIS: Hubungi owner
-
-📌 *I Love you yang udah donasi 😘*
-Setiap donasi akan digunakan untuk:
-✅ Maintain server 24/7
-✅ Update fitur terbaru
-✅ Menambah database
-
-💪 *Makin giat buat update *
-
-Kontak owner: wa.me/${ownerNumber}`
-    });
+export default async function donasi(context) {
+  const { sock, sender } = context;
+  
+  const text = `╭━━━━━ *SUPPORT DEVELOPMENT* ━━━━━╮
+┃
+┃ 💰 *Donasi / Support*
+┃ 
+┃ 🏦 *Bank BCA*
+┃   // isi nomor rekening a.n (nama)
+┃
+┃ 🏦 *Bank Mandiri*
+┃   // isi nomor rekening a.n (nama)
+┃
+┃ 💳 *DANA / OVO*
+┃   085715818953
+┃
+┃ 🌟 *Saweria*
+┃   https://saweria.co/username
+┃
+┃ 💝 *Trakteer*
+┃   https://trakteer.id/username
+┃
+┃ 🤝 *Terima kasih atas dukungannya!*
+┃   Setiap donasi membantu bot tetap aktif
+┃   dan pengembangan fitur baru.
+┃
+╰━━━━━━━━━━━━━━━━━━━━━━━━━━╯`;
+  
+  await sock.sendMessage(sender, { text });
 }
-
-module.exports = { donasiCommand };
