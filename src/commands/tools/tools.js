@@ -22,6 +22,7 @@ export default async function tools(context) {
 ┃ ✦ ${prefix}shorturl <link>
 ┃ ✦ ${prefix}weather <kota>
 ┃ ✦ ${prefix}whois <nomor>
+┃ ✦ ${prefix}url2img <url> - Screenshot website
 ┃
 ┃ 📌 Contoh:
 ┃ ${prefix}qrcode https://example.com
