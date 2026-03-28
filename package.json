@@ -1,7 +1,7 @@
 {
-  "name": "Nexus-tendo-md",
+  "name": "nexus-tendo-md",
   "version": "2.0.0",
-  "description": "Nexus MD",
+  "description": "Nexus MD - WhatsApp Bot Multi-Device",
   "main": "index.js",
   "type": "module",
   "scripts": {
@@ -10,31 +10,16 @@
     "pm2": "pm2 start ecosystem.config.js",
     "pm2:stop": "pm2 stop nexus-md",
     "pm2:delete": "pm2 delete nexus-md",
-    "pm2:logs": "pm2 logs nexus-md",
-    "pm2:monit": "pm2 monit"
+    "pm2:logs": "pm2 logs nexus-md"
   },
-  "keywords": [
-    "whatsapp-bot",
-    "baileys",
-    "nexus-md",
-    "nexus-tendo",
-    "oura-md",
-    "whatsapp",
-    "bot",
-    "multi-device",
-    "game-bot",
-    "ai-bot",
-    "downloader-bot"
-  ],
-  "author": "nexus : enjoy your life",
+  "keywords": ["whatsapp-bot", "baileys", "nexus-md", "nexus-tendo", "whatsapp", "bot"],
+  "author": "Nexus Team",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/Skyzo-himonoto/Nexus-tendo"
   },
-  "engines": {
-    "node": ">=18.0.0"
-  },
+  "engines": { "node": ">=18.0.0" },
   "dependencies": {
     "@hapi/boom": "^10.0.1",
     "@whiskeysockets/baileys": "^6.7.5",
@@ -53,7 +38,5 @@
     "sharp": "^0.33.4",
     "ytdl-core": "^4.11.5"
   },
-  "devDependencies": {
-    "nodemon": "^3.1.0"
-  }
+  "devDependencies": { "nodemon": "^3.1.0" }
 }
