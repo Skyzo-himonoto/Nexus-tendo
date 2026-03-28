@@ -58,7 +58,12 @@ export default async function messageHandler(sock, msg, store) {
     const isGroup = sender.endsWith('@g.us');
     const senderNumber = isGroup ? m.key.participant : sender;
     const messageText = m.message.conversation || m.message.extendedTextMessage?.text || m.message.imageMessage?.caption || '';
-    
+    const user = await db.getUser(senderNumber);
+        if (user.banned && !isOwner(senderNumber)) {
+        return await sock.sendMessage(sender, { 
+        text: '❌ *Kamu telah di-ban dari bot ini!*\nHubungi owner untuk informasi lebih lanjut.' 
+     });
+   }
     const settings = await db.getSettings();
     if (settings.autoRead) await sock.readMessages([m.key]);
     if (settings.autoTyping && messageText) await sock.sendPresenceUpdate('composing', sender);
