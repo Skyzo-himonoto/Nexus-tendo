@@ -19,6 +19,8 @@ export default async function maker(context) {
 ┃ ✦ ${prefix}burn <text> - Burn text effect
 ┃ ✦ ${prefix}wanted <reply image> - Wanted poster
 ┃ ✦ ${prefix}rip <reply image> - RIP tombstone
+┃ ✦ ${prefix}animefilter - Foto jadi anime
+┃ ✦ ${prefix}toonify - Foto jadi kartun
 ┃
 ┃ 📌 *Contoh:*
 ┃ ${prefix}carbon console.log('Hello')
@@ -126,7 +128,17 @@ export default async function maker(context) {
       await fs.unlink(inputPath);
       await fs.unlink(outputPath);
     }
-    
+
+    else if (command === 'animefilter') {
+      const animefilter = await import('./animefilter.js');
+      return animefilter.default(context);
+    }
+      
+    else if (command === 'toonify') {
+      const toonify = await import('./toonify.js');
+      return toonify.default(context);
+    }
+
     else {
       await sock.sendMessage(sender, { text: `❌ Maker effect *${command}* tidak dikenal!` });
     }
