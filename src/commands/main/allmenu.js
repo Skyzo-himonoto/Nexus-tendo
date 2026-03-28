@@ -17,15 +17,15 @@ export default async function allmenu(context) {
     '🖼️ STICKER': ['sticker', 'stickerwm', 'toimg'],
     '🤖 AI': ['ai', 'gpt', 'gemini', 'blackbox'],
     '📥 DOWNLOADER': ['ytmp3', 'ytmp4', 'tiktok', 'ig', 'fb', 'twitter', 'mediafire', 'spotify'],
-    '🎮 GAMES': ['game', 'jawab', 'gamelist'],
-    '🛠️ TOOLS': ['qrcode', 'tts', 'translate', 'styletext', 'calc', 'shorturl', 'weather', 'whois'],
+    '🎮 GAMES': ['game', 'jawab', 'gamelist', 'suit', 'tebakangka'],
+    '🛠️ TOOLS': ['qrcode', 'tts', 'translate', 'styletext', 'calc', 'shorturl', 'weather', 'whois', 'afk', 'report', 'runtime', 'url2img'],
     '🎌 ANIME': ['anime', 'waifu'],
     '👥 GROUP': ['group', 'add', 'kick', 'promote', 'demote', 'setpp', 'tagall'],
     '🕌 ISLAM': ['quran', 'jadwal', 'doa', 'asmaulhusna'],
     '🎲 RANDOM': ['random', 'quotes', 'fakta', 'meme', 'cat', 'dog'],
     '⚙️ OWNER': ['exec', 'eval', 'bc', 'addprem', 'delprem', 'listprem', 'restart', 'cleartmp', 'backup', 'sewa'],
     '🔄 CONVERTER': ['toimg', 'tomp3', 'tomp4', 'togif'],
-    '🎨 MAKER': ['carbon', 'neon', 'glitch', 'burn', 'wanted', 'rip'],
+    '🎨 MAKER': ['carbon', 'neon', 'glitch', 'burn', 'wanted', 'rip', 'rainbow', '3dtext'],
     '🔍 SEARCH': ['google', 'image', 'pinterest', 'github']
   };
   
