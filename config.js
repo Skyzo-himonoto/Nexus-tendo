@@ -7,18 +7,21 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+// Base64 encoded (jangan diubah kalo gak mau error)
+const credit = Buffer.from('TmV4dXMgVGVhbSB8IEdpdEh1YjogaHR0cHM6Ly9naXRodWIuY29tL1NreXpvLWhpbW9ub3RvL05leHVzLXRlbmRv', 'base64').toString('utf-8');
+
 export default {
   botName: process.env.BOT_NAME || 'NexusMD',
   version: '2.0.0',
+  credit: credit,
   
   ownerNumbers: (process.env.OWNER_NUMBER || '').split(',').map(n => n.trim()),
-  ownerName: process.env.OWNER_NAME || 'nexus',
+  ownerName: process.env.OWNER_NAME || 'Nexus',
   
   getOwnerNumber: () => {
     const owner = process.env.OWNER_NUMBER || '';
     let number = owner.split(',')[0];
-    number = number.replace('@s.whatsapp.net', '');
-    number = number.replace(/[^0-9]/g, '');
+    number = number.replace('@s.whatsapp.net', '').replace(/[^0-9]/g, '');
     return number || '628xxx';
   },
   
@@ -37,29 +40,10 @@ export default {
   },
   
   prefix: process.env.PREFIX || '.',
-  allowedPrefixes: [
-    '.',     
-    '!',     
-    '/',     
-    '#',     
-    '?',     
-    '$',     
-    '&',     
-    '@',     
-    '+',     
-    '-',     
-    '=',     
-    ';',     
-    ':',     
-    '~',     
-    '`',     
-    '|',     
-    '^',     
-    '%'      
-  ],
+  allowedPrefixes: ['.', '!', '/', '#', '?', '$', '&', '@', '+', '-', '=', ';', ':', '~', '`', '|', '^', '%'],
   
   sessionName: process.env.SESSION_NAME || 'nexus-session',
- 
+  
   autoRead: process.env.AUTO_READ === 'true',
   autoTyping: process.env.AUTO_TYPING === 'true',
   autoRecording: process.env.AUTO_RECORDING === 'true',
@@ -87,11 +71,6 @@ export default {
     config.botJid = number + '@s.whatsapp.net';
   },
   
-  getBotNumber: () => {
-    return config.botNumber || 'Belum terhubung';
-  },
-  
-  getBotJid: () => {
-    return config.botJid || null;
-  }
+  getBotNumber: () => config.botNumber || 'Belum terhubung',
+  getBotJid: () => config.botJid || null
 };
