@@ -27,5 +27,5 @@ export default async function open(context) {
   if (!isBotAdmin) return await sock.sendMessage(sender, { text: '❌ Bot harus admin!' });
   
   await sock.groupSettingUpdate(sender, 'not_announcement');
-  await sock.sendMessage(sender, { text: '🔓 Grup dibuka! Semua anggota bisa kirim pesan.' });
+  await sock.sendMessage(sender, { text: '🔓 woi bangung aniing grup buka nih.' });
 }
