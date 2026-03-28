@@ -21,7 +21,9 @@ export default async function maker(context) {
 ┃ ✦ ${prefix}rip <reply image> - RIP tombstone
 ┃ ✦ ${prefix}animefilter - Foto jadi anime
 ┃ ✦ ${prefix}toonify - Foto jadi kartun
-┃
+┃ ✦ ${prefix}rainbow <text> - Rainbow text
+┃ ✦ ${prefix}3dtext <text> - 3D text effect
+┃ 
 ┃ 📌 *Contoh:*
 ┃ ${prefix}carbon console.log('Hello')
 ┃ ${prefix}neon Nexus MD
