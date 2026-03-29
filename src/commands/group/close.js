@@ -14,18 +14,3 @@ export default async function close(context) {
   await sock.sendMessage(sender, { text: '🔒 Grup ditutup bray, nunggu admin buka ya.' });
 }
 
-export default async function open(context) {
-  const { sock, sender, m, isGroup, isOwner } = context;
-  if (!isGroup) return await sock.sendMessage(sender, { text: '❌ Command ini hanya untuk grup!' });
-  
-  const groupMetadata = await sock.groupMetadata(sender);
-  const isAdmin = groupMetadata.participants.find(p => p.id === m.key.participant)?.admin === 'admin';
-  const botId = sock.user.id.split(':')[0] + '@s.whatsapp.net';
-  const isBotAdmin = groupMetadata.participants.find(p => p.id === botId)?.admin === 'admin';
-  
-  if (!isAdmin && !isOwner) return await sock.sendMessage(sender, { text: '❌ Hanya admin!' });
-  if (!isBotAdmin) return await sock.sendMessage(sender, { text: '❌ Bot harus admin!' });
-  
-  await sock.groupSettingUpdate(sender, 'not_announcement');
-  await sock.sendMessage(sender, { text: '🔓 woi bangung aniing grup buka nih.' });
-}
