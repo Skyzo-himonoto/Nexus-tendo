@@ -1,6 +1,12 @@
 import config from '../../../config.js';
 import moment from 'moment-timezone';
 import db from '../../../lib/database/index.js';
+import fs from 'fs-extra';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 export default async function menu(context) {
   const { sock, sender, m, prefix } = context;
@@ -12,6 +18,8 @@ export default async function menu(context) {
   const ownerNumber = config.getOwnerNumber();
   const botNumber = config.getBotNumber() || 'Belum terhubung';
   const ownerLink = `wa.me/${ownerNumber}`;
+  const audioPath = path.join(config.assetsPath, 'audio', 'Nexus.mp3');
+  const imagePath = path.join(config.assetsPath, 'images', 'nexus.jpg');
   
   const menuText = `╔══════════════════════════════════════════════════════════╗
 ║              ✨ *${config.botName}* ✨                       ║
@@ -45,11 +53,38 @@ export default async function menu(context) {
   ];
   
   const mentions = [sender, `${ownerNumber}@s.whatsapp.net`, `${botNumber}@s.whatsapp.net`];
+  try {
+    if (await fs.pathExists(audioPath)) {
+      await sock.sendMessage(sender, {
+        audio: { url: audioPath },
+        mimetype: 'audio/mpeg',
+        fileName: 'Nexus.mp3',
+        ptt: false 
+      });
+    }
+  } catch (err) {
+    console.log('Gagal kirim audio:', err.message);
+  }
   
-  await sock.sendMessage(sender, {
-    text: menuText,
-    footer: `⚡ ${config.botName} v${config.version}`,
-    templateButtons: buttons,
-    mentions
-  });
+  try {
+    if (await fs.pathExists(imagePath)) {
+      await sock.sendMessage(sender, {
+        image: { url: imagePath },
+        caption: menuText,
+        footer: `🈲 ${config.botName} v${config.version}`,
+        templateButtons: buttons,
+        mentions
+      });
+    } else {
+      await sock.sendMessage(sender, {
+        text: menuText,
+        footer: `❄️ ${config.botName} v${config.version}`,
+        templateButtons: buttons,
+        mentions
+      });
+    }
+  } catch (err) {
+    console.log('Gagal kirim menu:', err.message);
+    await sock.sendMessage(sender, { text: menuText });
+  }
 }
