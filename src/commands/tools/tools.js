@@ -80,7 +80,7 @@ export default async function tools(context) {
     let result = `✨ Style Text\n\n📝 Original: ${text}\n\n🔤 Bold: ${styles.bold}\n📖 Italic: ${styles.italic}\n✍️ Script: ${styles.script}\n🖋️ Fraktur: ${styles.fraktur}\n🔲 Double: ${styles.double}`;
     await sock.sendMessage(sender, { text: result });
   }
-  
+
   else if (command === 'calc') {
     if (params.length < 3) return await sock.sendMessage(sender, { text: '📝 .calc 10 + 5' });
     const num1 = parseFloat(params[0]);
