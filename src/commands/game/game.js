@@ -19,8 +19,16 @@ export default async function game(context) {
 ┃ ✦ ${prefix}game tebaklagu
 ┃ ✦ ${prefix}game family100
 ┃ ✦ ${prefix}game caklontong
-┃ ✦ ${prefix}suit - Batu-gunting-kertas
-┃ ✦ ${prefix}tebakangka - Tebak angka 1-100
+┃ ✦ ${prefix}suit 
+┃ ✦ ${prefix}tebakangka 
+┃ ✦ ${prefix}slot 
+┃ ✦ ${prefix}tebakgambar 
+┃ ✦ ${prefix}tebakhewan 
+┃ ✦ ${prefix}tebaklagu 
+┃ ✦ ${prefix}tebakbendera 
+┃ ✦ ${prefix}trivia 
+┃ ✦ ${prefix}mathgame 
+┃ ✦ ${prefix}tebakfilm 
 ┃
 ┃ 📝 Cara: ${prefix}game <nama_game>
 ┃ ⏱️ Waktu: 30 detik/soal
