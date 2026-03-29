@@ -12,7 +12,7 @@ export default async function slot(context) {
     else hadiah = 25;
     pesan = `🎉 JACKPOT! +${hadiah} poin! 🎉`;
   } else if (hasil[0] === hasil[1] || hasil[1] === hasil[2] || hasil[0] === hasil[2]) { hadiah = 10; pesan = `✨ SELAMAT! +10 poin ✨`; }
-  else pesan = `Coba lagi `;
+  else pesan = `😭 Coba lagi`;
   
   await sock.sendMessage(sender, { text: `╭━━━━━ 🎰 SLOT MACHINE ━━━━━╮\n┃\n┃     ${hasil[0]} | ${hasil[1]} | ${hasil[2]}\n┃\n┃ ${pesan}\n┃\n╰━━━━━━━━━━━━━━━━━━━╯` });
 }
