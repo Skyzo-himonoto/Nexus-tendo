@@ -11,6 +11,8 @@ export default async function allmenu(context) {
   const date = moment().tz(config.timezone).format('DD/MM/YYYY');
   const ownerNumber = config.getOwnerNumber();
   const botNumber = config.getBotNumber() || 'Belum terhubung';
+  const audioPath = path.join(config.assetsPath, 'audio', 'Nexus.mp3');
+  const imagePath = path.join(config.assetsPath, 'images', 'nexus.jpg');
   
   const allCommands = {
     '📁 UTAMA': ['menu', 'allmenu', 'ping', 'owner', 'donasi', 'settings'],
