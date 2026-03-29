@@ -17,7 +17,7 @@ export default async function allmenu(context) {
     '🖼️ STICKER': ['sticker', 'stickerwm', 'toimg'],
     '🤖 AI': ['ai', 'gpt', 'gemini', 'blackbox'],
     '📥 DOWNLOADER': ['ytmp3', 'ytmp4', 'tiktok', 'ig', 'fb', 'twitter', 'mediafire', 'spotify'],
-    '🎮 GAMES': ['game', 'jawab', 'gamelist', 'suit', 'tebakangka', 'suit', 'tebakangka', 'slot ' , 'tebakgambar' , 'tebakhewan' , 'tebaklagu , 'tebakbendera' , 'trivia' , 'mathgame' , 'tebakfilm'],
+    '🎮 GAMES': ['game', 'jawab', 'gamelist', 'suit', 'tebakangka', 'suit', 'tebakangka', 'slot ' , 'tebakgambar' , 'tebakhewan' , 'tebaklagu' , 'tebakbendera' , 'trivia' , 'mathgame' , 'tebakfilm'],
     '🛠️ TOOLS': ['qrcode', 'tts', 'translate', 'styletext', 'calc', 'shorturl', 'weather', 'whois', 'afk', 'report', 'runtime', 'url2img'],
     '🎌 ANIME': ['anime', 'waifu'],
     '👥 GROUP': ['group', 'add', 'kick', 'promote', 'demote', 'setpp', 'tagall'],
