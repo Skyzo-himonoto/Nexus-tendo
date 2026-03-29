@@ -51,7 +51,7 @@ export default async function allmenu(context) {
   }
   
   text += `╠══════════════════════════════════════════════════════════════╣
-║  📞 *Hubungi Owner:* wa.me/${ownerNumber}                      ║
+║  📞 *Hubungi Owner:* wa.me/${ownerNumber}                        ║
 ║  💡 Gunakan *${usedPrefix}category <nama>* untuk filter          ║
 ╚══════════════════════════════════════════════════════════════╝`;
   
